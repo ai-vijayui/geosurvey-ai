@@ -1,0 +1,33 @@
+{
+  "name": "geosurvey-ai",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n web,api \"npm run dev -w @geosurvey-ai/web\" \"npm run dev -w @geosurvey-ai/api\"",
+    "build": "npm run build -w @geosurvey-ai/shared && npm run build -w @geosurvey-ai/web && npm run build -w @geosurvey-ai/api",
+    "db:generate": "npx prisma generate",
+    "db:migrate:dev": "npx prisma migrate dev",
+    "db:migrate:deploy": "npx prisma migrate deploy",
+    "db:reset": "npx prisma migrate reset --force",
+    "db:seed": "npx prisma db seed",
+    "db:push": "npx prisma db push",
+    "test": "npm run test -w @geosurvey-ai/api",
+    "lint": "eslint apps packages --ext .ts,.tsx"
+  },
+  "overrides": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "eslint": "^8.57.0",
+    "prisma": "^6.19.3",
+    "typescript": "^5.4.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.3"
+  }
+}

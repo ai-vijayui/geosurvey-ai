@@ -1,0 +1,45 @@
+{
+  "name": "@geosurvey-ai/api",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "worker": "tsx src/workers/runner.ts",
+    "test": "vitest run --pool=threads --poolOptions.threads.singleThread"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1025.0",
+    "@aws-sdk/s3-request-presigner": "^3.1025.0",
+    "@clerk/clerk-sdk-node": "^5.1.6",
+    "@geosurvey-ai/shared": "1.0.0",
+    "@prisma/client": "^6.19.3",
+    "bullmq": "^5.73.0",
+    "cors": "^2.8.6",
+    "csv-parse": "^6.2.1",
+    "express": "^5.2.1",
+    "helmet": "^8.1.0",
+    "ioredis": "^5.10.1",
+    "morgan": "^1.10.1",
+    "multer": "^2.1.1",
+    "prisma": "^6.19.3",
+    "proj4": "^2.20.8",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/morgan": "^1.9.10",
+    "@types/multer": "^2.0.0",
+    "@types/node": "^24.8.1",
+    "@vitest/expect": "^3.2.4",
+    "@vitest/runner": "^3.2.4",
+    "@vitest/snapshot": "^3.2.4",
+    "@vitest/spy": "^3.2.4",
+    "@vitest/utils": "^3.2.4",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  }
+}

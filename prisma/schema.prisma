@@ -1,0 +1,154 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Organization {
+  id         String    @id @default(cuid())
+  name       String
+  clerkOrgId String?   @unique
+  projects   Project[]
+  createdAt  DateTime  @default(now())
+}
+
+model Project {
+  id          String       @id @default(cuid())
+  name        String
+  description String?
+  orgId       String
+  org         Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  surveyJobs  SurveyJob[]
+  createdAt   DateTime     @default(now())
+}
+
+model SurveyJob {
+  id           String       @id @default(cuid())
+  projectId     String
+  project       Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  name          String
+  status        JobStatus    @default(PENDING)
+  type          SurveyType
+  inputFiles    InputFile[]
+  outputs       OutputFile[]
+  aiInsights    AiInsight[]
+  gnssPoints    GnssPoint[]
+  accuracyRmse  Float?
+  areaSqM       Float?
+  pointCount    BigInt?
+  boundaryGeojson Json?
+  markerLat     Float?
+  markerLng     Float?
+  centroidLat   Float?
+  centroidLng   Float?
+  metadata      Json?
+  processingMetadata Json?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([status])
+  @@index([projectId])
+  @@index([centroidLat, centroidLng])
+}
+
+model InputFile {
+  id         String    @id @default(cuid())
+  jobId       String
+  job         SurveyJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  fileName    String
+  fileType    FileType
+  s3Key       String
+  sizeBytes   BigInt
+  uploadedAt  DateTime  @default(now())
+
+  @@index([jobId, uploadedAt])
+}
+
+model OutputFile {
+  id         String     @id @default(cuid())
+  jobId      String
+  job        SurveyJob  @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  fileName   String
+  fileType   OutputType
+  s3Key      String
+  sizeBytes  BigInt
+  createdAt  DateTime   @default(now())
+
+  @@index([jobId, createdAt])
+}
+
+model AiInsight {
+  id         String     @id @default(cuid())
+  jobId      String
+  job        SurveyJob  @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  severity   Severity
+  category   String
+  message    String
+  confidence Float
+  metadata   Json?
+  createdAt  DateTime   @default(now())
+
+  @@index([jobId, createdAt])
+}
+
+model GnssPoint {
+  id        String     @id @default(cuid())
+  jobId     String
+  job       SurveyJob  @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  lat       Float
+  lng       Float
+  elevation Float
+  accuracy  Float
+  timestamp DateTime
+
+  @@index([jobId])
+  @@index([jobId, timestamp])
+}
+
+enum JobStatus {
+  PENDING
+  PROCESSING
+  REVIEW
+  COMPLETED
+  FAILED
+}
+
+enum SurveyType {
+  LIDAR
+  DRONE_PHOTOGRAMMETRY
+  GNSS_TRAVERSE
+  TOTAL_STATION
+  HYBRID
+}
+
+enum FileType {
+  LAS
+  LAZ
+  TIFF
+  GEOTIFF
+  CSV
+  SHP
+  DXF
+  PDF
+  JPG
+  MP4
+}
+
+enum OutputType {
+  ORTHOMOSAIC
+  POINT_CLOUD
+  CONTOUR_DXF
+  AREA_REPORT
+  BOUNDARY_SHP
+  PDF_REPORT
+}
+
+enum Severity {
+  INFO
+  WARNING
+  ERROR
+  SUCCESS
+}
