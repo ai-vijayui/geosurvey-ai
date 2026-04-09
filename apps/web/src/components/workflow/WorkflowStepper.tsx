@@ -1,3 +1,5 @@
+import { AppIcon, type AppIconName } from "../ui/AppIcon";
+
 type WorkflowStep = {
   key: string;
   label: string;
@@ -24,13 +26,16 @@ export function WorkflowStepper({ steps, compact = false }: WorkflowStepperProps
           }`}
         >
           <span
-            className={`grid h-8 w-8 place-items-center rounded-full border text-xs font-semibold ${
+            className={`grid h-9 w-9 place-items-center rounded-full border ${
               step.status === "complete" || step.status === "current"
                 ? "border-[#f45b55] bg-[#f45b55] text-white"
                 : "border-slate-300 bg-slate-100 text-slate-500"
             }`}
           >
-            {step.status === "complete" ? "OK" : index + 1}
+            <AppIcon
+              name={step.status === "complete" ? "check" : getWorkflowIcon(step.key, index)}
+              className="h-4 w-4"
+            />
           </span>
           <div className="mt-3 space-y-1">
             <strong className="block text-sm font-semibold text-slate-900">{step.label}</strong>
@@ -42,4 +47,17 @@ export function WorkflowStepper({ steps, compact = false }: WorkflowStepperProps
       ))}
     </div>
   );
+}
+
+function getWorkflowIcon(key: string, index: number): AppIconName {
+  const icons: Record<string, AppIconName> = {
+    project: "projects",
+    job: "jobs",
+    upload: "upload",
+    process: "processing",
+    review: "review",
+    export: "download"
+  };
+
+  return icons[key] ?? (index % 2 === 0 ? "spark" : "check");
 }

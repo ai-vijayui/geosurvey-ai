@@ -6,6 +6,16 @@ import { ProjectCreateModal } from "../components/ProjectCreateModal";
 import { EmptyState } from "../components/feedback/EmptyState";
 import { useNotifications } from "../context/NotificationContext";
 import { apiGet, apiPost, type PaginatedResponse } from "../lib/api";
+import { AppIcon } from "../components/ui/AppIcon";
+import { getButtonClass, GhostButton, PrimaryButton, SecondaryButton } from "../components/ui/Button";
+import { Card } from "../components/ui/Card";
+import { FilterBar } from "../components/ui/FilterBar";
+import { SearchInput, SelectField } from "../components/ui/Fields";
+import { PageHeader } from "../components/ui/PageHeader";
+import { SectionHeader } from "../components/ui/SectionHeader";
+import { StatCard } from "../components/ui/StatCard";
+import { StatusBadge } from "../components/ui/StatusBadge";
+import { TableContainer } from "../components/ui/TableContainer";
 
 type JobRecord = {
   id: string;
@@ -53,7 +63,11 @@ function formatSurveyType(type: SurveyType) {
 }
 
 function getStatusTone(status: string) {
-  return status === "FAILED" ? "status-danger" : "";
+  if (status === "FAILED") return "error";
+  if (status === "COMPLETED") return "success";
+  if (status === "REVIEW") return "warning";
+  if (status === "PROCESSING") return "info";
+  return "default";
 }
 
 function getWorkflowCopy(projectCount: number, jobCount: number) {
@@ -232,134 +246,109 @@ export function JobList() {
 
   return (
     <div className="reference-page">
-      <div className="reference-page-header">
-        <div className="reference-page-header__copy">
-          <h1>Jobs</h1>
-          <p>
-            Move from project setup to upload, processing, review, and export without losing your place.
-          </p>
-        </div>
-        <div className="reference-actions">
-          <Link className="button-secondary" to="/help#first-project">
-            Show Me How
-          </Link>
-          <Link className="button-secondary" to="/help#sample-files">
-            Explain This Page
-          </Link>
-          <Link className="button-secondary" to="/projects">
-            View projects
-          </Link>
-          <button className="button-primary" onClick={openNewJobModal}>
-            New Job
-          </button>
+      <PageHeader
+        title="Jobs"
+        subtitle="Move from project setup to upload, processing, review, and export without losing your place."
+        actions={(
+          <>
+            <Link className={getButtonClass("secondary")} to="/help#first-project">Show Me How</Link>
+            <Link className={getButtonClass("secondary")} to="/help#sample-files">Explain This Page</Link>
+            <Link className={getButtonClass("secondary")} to="/projects">View projects</Link>
+            <PrimaryButton onClick={openNewJobModal}>New Job</PrimaryButton>
+          </>
+        )}
+      />
+
+      <div className="jobs-summary-grid">
+        <Card variant="accent" className="jobs-hero-card">
+          <div className="jobs-hero-card__eyebrow">
+            <span className="reference-chip">Next action</span>
+          </div>
+          <div className="jobs-hero-card__body">
+            <div className="jobs-hero-card__copy">
+              <strong className="jobs-hero-card__title">{workflowCopy.title}</strong>
+              <p className="jobs-hero-card__text">{workflowCopy.body}</p>
+            </div>
+            <div className="jobs-hero-card__actions">
+              <PrimaryButton onClick={openNewJobModal}>{workflowCopy.cta}</PrimaryButton>
+              <Link className={getButtonClass("secondary")} to="/processing">View processing</Link>
+            </div>
+          </div>
+        </Card>
+        <div className="jobs-kpi-grid">
+          <StatCard label="Total jobs" value={summary.total} meta="All jobs in the current queue" />
+          <StatCard label="Active workflow" value={summary.active} meta="Jobs currently processing or under review" />
+          <StatCard label="Completed jobs" value={summary.completed} meta="Finished surveys ready for export" />
+          <StatCard label="Imported points" value={summary.totalPoints.toLocaleString()} meta="Total point volume across visible jobs" />
         </div>
       </div>
 
-      <div className="reference-panel-grid">
-        <div className="reference-card reference-card--accent space-y-4">
-          <span className="reference-chip">Next action</span>
-          <strong className="block text-2xl font-semibold leading-tight text-slate-900">{workflowCopy.title}</strong>
-          <span className="block max-w-2xl text-sm leading-6 text-slate-500">{workflowCopy.body}</span>
-          <div className="flex flex-wrap items-center gap-3">
-            <button className="button-primary" onClick={openNewJobModal}>
-              {workflowCopy.cta}
-            </button>
-            <Link className="button-secondary" to="/processing">
-              View processing
-            </Link>
-          </div>
-        </div>
-        <div className="reference-metrics">
-          <div className="reference-metric">
-            <span className="reference-metric__label">Total jobs</span>
-            <strong className="reference-metric__value">{summary.total}</strong>
-            <span className="reference-metric__meta">All jobs in the current queue</span>
-          </div>
-          <div className="reference-metric">
-            <span className="reference-metric__label">Active workflow</span>
-            <strong className="reference-metric__value">{summary.active}</strong>
-            <span className="reference-metric__meta">Jobs currently processing or under review</span>
-          </div>
-          <div className="reference-metric">
-            <span className="reference-metric__label">Completed jobs</span>
-            <strong className="reference-metric__value">{summary.completed}</strong>
-            <span className="reference-metric__meta">Finished surveys ready for export</span>
-          </div>
-          <div className="reference-metric">
-            <span className="reference-metric__label">Imported points</span>
-            <strong className="reference-metric__value">{summary.totalPoints.toLocaleString()}</strong>
-            <span className="reference-metric__meta">Total point volume across visible jobs</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="reference-card space-y-4">
-        <div className="reference-filter-bar">
-          <label className="grid gap-2 text-sm text-slate-600">
-            <span>Search</span>
-            <input className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-slate-300 focus:ring-2 focus:ring-emerald-500/20" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search job, project, type, or status" />
-          </label>
-
-          <label className="grid gap-2 text-sm text-slate-600">
-            <span>Status</span>
-            <select
-              className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-emerald-500/20"
-              value={statusFilter}
-              onChange={(event) => updateFilters(true, () => setStatusFilter(event.target.value as (typeof jobStatuses)[number]))}
+      <FilterBar
+        footer={(
+          <>
+            <span className="jobs-filter-summary">Showing {filteredJobs.length} of {pagination?.total ?? filteredJobs.length} jobs</span>
+            <SecondaryButton
+              onClick={() => {
+                setSearch("");
+                setStatusFilter("all");
+                setTypeFilter("all");
+                setProjectFilter("all");
+                setPage(1);
+              }}
             >
-              {jobStatuses.map((status) => (
-                <option key={status} value={status}>
-                  {status === "all" ? "All statuses" : status}
-                </option>
-              ))}
-            </select>
-          </label>
+              Reset filters
+            </SecondaryButton>
+          </>
+        )}
+      >
+        <SearchInput
+          label="Search"
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          placeholder="Search job, project, type, or status"
+        />
 
-          <label className="grid gap-2 text-sm text-slate-600">
-            <span>Survey type</span>
-            <select className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-emerald-500/20" value={typeFilter} onChange={(event) => updateFilters(true, () => setTypeFilter(event.target.value as SurveyType | "all"))}>
-              <option value="all">All types</option>
-              {surveyTypes.map((type) => (
-                <option key={type.value} value={type.value}>
-                  {type.label}
-                </option>
-              ))}
-            </select>
-          </label>
+        <SelectField
+          label="Status"
+          value={statusFilter}
+          onChange={(event) => updateFilters(true, () => setStatusFilter(event.target.value as (typeof jobStatuses)[number]))}
+        >
+          {jobStatuses.map((status) => (
+            <option key={status} value={status}>
+              {status === "all" ? "All statuses" : status}
+            </option>
+          ))}
+        </SelectField>
 
-          <label className="grid gap-2 text-sm text-slate-600">
-            <span>Project</span>
-            <select className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-emerald-500/20" value={projectFilter} onChange={(event) => updateFilters(true, () => setProjectFilter(event.target.value))}>
-              <option value="all">All projects</option>
-              {projects.map((project) => (
-                <option key={project.id} value={project.id}>
-                  {project.name}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
+        <SelectField
+          label="Survey type"
+          value={typeFilter}
+          onChange={(event) => updateFilters(true, () => setTypeFilter(event.target.value as SurveyType | "all"))}
+        >
+          <option value="all">All types</option>
+          {surveyTypes.map((type) => (
+            <option key={type.value} value={type.value}>
+              {type.label}
+            </option>
+          ))}
+        </SelectField>
 
-        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <span className="text-sm text-slate-500">
-            Showing {filteredJobs.length} of {pagination?.total ?? filteredJobs.length} jobs
-          </span>
-          <button
-            className="button-secondary"
-            onClick={() => {
-              setSearch("");
-              setStatusFilter("all");
-              setTypeFilter("all");
-              setProjectFilter("all");
-              setPage(1);
-            }}
-          >
-            Reset filters
-          </button>
-        </div>
-      </div>
+        <SelectField
+          label="Project"
+          value={projectFilter}
+          onChange={(event) => updateFilters(true, () => setProjectFilter(event.target.value))}
+        >
+          <option value="all">All projects</option>
+          {projects.map((project) => (
+            <option key={project.id} value={project.id}>
+              {project.name}
+            </option>
+          ))}
+        </SelectField>
+      </FilterBar>
 
-      <div className="reference-card reference-table-card">
+      <Card className="reference-table-card jobs-table-card">
+        <SectionHeader title="Job queue" subtitle="Track each survey workflow, current status, and next action from one table." />
         {jobsQuery.isLoading ? (
           <div>
             <div className="h-4 rounded-full bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200 bg-[length:220%_100%] animate-[shimmer_1.4s_linear_infinite]" />
@@ -371,25 +360,45 @@ export function JobList() {
             eyebrow="Unavailable"
             title="Jobs could not be loaded"
             description="The job workspace is temporarily unavailable. Retry loading jobs before creating or opening workflows."
-            action={<button className="button-primary" onClick={() => { void jobsQuery.refetch(); void projectsQuery.refetch(); }}>Retry</button>}
+            icon="jobs"
+            action={<PrimaryButton onClick={() => { void jobsQuery.refetch(); void projectsQuery.refetch(); }}>Retry</PrimaryButton>}
           />
         ) : filteredJobs.length === 0 ? (
-          <div className="flex min-h-[18rem] flex-col items-center justify-center rounded-3xl border border-dashed border-slate-200 bg-slate-50/70 px-6 py-10 text-center">
-            <strong className="text-lg font-semibold text-slate-900">{projects.length === 0 ? "Create a project to start surveying" : (pagination?.total ?? 0) > 0 ? "No jobs match the current filters" : "Create a job to start surveying"}</strong>
-            <span className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
-              {projects.length === 0
+          <EmptyState
+            icon={projects.length === 0 ? "projects" : (pagination?.total ?? 0) > 0 ? "search" : "jobs"}
+            title={projects.length === 0 ? "Create a project to start surveying" : (pagination?.total ?? 0) > 0 ? "No jobs match the current filters" : "Create a job to start surveying"}
+            description={
+              projects.length === 0
                 ? "Projects are required before jobs can be created. Start there and the job workflow will continue automatically."
                 : (jobsQuery.data?.data?.length ?? 0) > 0 || (pagination?.total ?? 0) > 0
                   ? "Clear one or more filters to see the full workflow queue."
-                  : "Create a job, upload survey files, run processing, then review map results and AI insights."}
-            </span>
-            <button className="button-primary mt-5" onClick={projects.length === 0 ? () => setIsCreateProjectOpen(true) : openNewJobModal}>
-              {projects.length === 0 ? "Create project" : (jobsQuery.data?.data?.length ?? 0) > 0 || (pagination?.total ?? 0) > 0 ? "Create another job" : "Create first job"}
-            </button>
-          </div>
+                  : "Create a job, upload survey files, run processing, then review map results and AI insights."
+            }
+            action={(
+              <div className="reference-actions">
+                <PrimaryButton onClick={projects.length === 0 ? () => setIsCreateProjectOpen(true) : openNewJobModal}>
+                  {projects.length === 0 ? "Create project" : (jobsQuery.data?.data?.length ?? 0) > 0 || (pagination?.total ?? 0) > 0 ? "Create another job" : "Create first job"}
+                </PrimaryButton>
+                {(jobsQuery.data?.data?.length ?? 0) > 0 || (pagination?.total ?? 0) > 0 ? (
+                  <SecondaryButton
+                    onClick={() => {
+                      setSearch("");
+                      setStatusFilter("all");
+                      setTypeFilter("all");
+                      setProjectFilter("all");
+                      setPage(1);
+                    }}
+                  >
+                    Clear filters
+                  </SecondaryButton>
+                ) : null}
+              </div>
+            )}
+          />
         ) : (
-          <div className="reference-table-shell">
-            <div className="job-mobile-cards">
+          <TableContainer
+            mobileCards={(
+              <div className="job-mobile-cards">
               {filteredJobs.map((job) => {
                 const inputCount = job.inputFiles?.length ?? 0;
                 const outputCount = job.outputs?.length ?? 0;
@@ -402,7 +411,7 @@ export function JobList() {
                         <strong className="block text-sm font-semibold text-slate-900">{job.name}</strong>
                         <span className="text-xs text-slate-500">{projectLookup.get(job.projectId) ?? "Unassigned project"}</span>
                       </div>
-                      <span className={`status-badge ${getStatusTone(job.status)}`.trim()}>{job.status}</span>
+                      <StatusBadge label={job.status} tone={getStatusTone(job.status)} />
                     </div>
 
                     <div className="job-mobile-card__grid">
@@ -430,59 +439,60 @@ export function JobList() {
                         <strong>{nextAction}</strong>
                         <span className="text-xs text-slate-500">{inputCount} input / {outputCount} output</span>
                       </div>
-                      <Link className="table-action" to={`/jobs/${job.id}`}>
+                      <Link className={getButtonClass("secondary")} to={`/jobs/${job.id}`}>
                         Open
                       </Link>
                     </div>
                   </article>
                 );
               })}
-            </div>
-            <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-slate-200">
+              </div>
+            )}
+          >
+            <table className="ui-table">
               <thead>
-                <tr className="bg-slate-50">
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Job</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Project</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Survey type</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Status</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Created</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Points</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">RMSE</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Workflow</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.14em] text-slate-500" />
+                <tr>
+                  <th>Job</th>
+                  <th>Project</th>
+                  <th>Survey type</th>
+                  <th>Status</th>
+                  <th>Created</th>
+                  <th>Points</th>
+                  <th>RMSE</th>
+                  <th>Workflow</th>
+                  <th />
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-200 bg-white">
+              <tbody>
                 {filteredJobs.map((job) => {
                   const inputCount = job.inputFiles?.length ?? 0;
                   const outputCount = job.outputs?.length ?? 0;
                   const nextAction = inputCount === 0 ? "Upload files" : job.status === "PENDING" ? "Start processing" : job.status === "PROCESSING" ? "Monitor progress" : job.status === "REVIEW" ? "Review insights" : outputCount > 0 ? "Download outputs" : "Open job";
 
                   return (
-                    <tr key={job.id} className="align-top">
-                      <td className="px-4 py-4">
+                    <tr key={job.id}>
+                      <td>
                         <div className="space-y-1">
                           <strong className="block text-sm font-semibold text-slate-900">{job.name}</strong>
                           <span className="text-xs text-slate-500">Updated {formatDate(job.updatedAt)}</span>
                         </div>
                       </td>
-                      <td className="px-4 py-4 text-sm text-slate-600">{projectLookup.get(job.projectId) ?? "Unassigned project"}</td>
-                      <td className="px-4 py-4 text-sm text-slate-600">{formatSurveyType(job.type)}</td>
-                      <td className="px-4 py-4">
-                        <span className={`status-badge ${getStatusTone(job.status)}`.trim()}>{job.status}</span>
+                      <td className="text-sm text-slate-600">{projectLookup.get(job.projectId) ?? "Unassigned project"}</td>
+                      <td className="text-sm text-slate-600">{formatSurveyType(job.type)}</td>
+                      <td>
+                        <StatusBadge label={job.status} tone={getStatusTone(job.status)} />
                       </td>
-                      <td className="px-4 py-4 text-sm text-slate-600">{formatDate(job.createdAt)}</td>
-                      <td className="px-4 py-4 text-sm text-slate-600">{job.pointCount?.toLocaleString() ?? "-"}</td>
-                      <td className="px-4 py-4 text-sm text-slate-600">{job.accuracyRmse ? `${job.accuracyRmse.toFixed(2)} m` : "-"}</td>
-                      <td className="px-4 py-4">
+                      <td className="text-sm text-slate-600">{formatDate(job.createdAt)}</td>
+                      <td className="text-sm text-slate-600">{job.pointCount?.toLocaleString() ?? "-"}</td>
+                      <td className="text-sm text-slate-600">{job.accuracyRmse ? `${job.accuracyRmse.toFixed(2)} m` : "-"}</td>
+                      <td>
                         <div className="space-y-1">
                           <span className="block text-sm text-slate-600">{nextAction}</span>
                           <span className="block text-xs text-slate-500">{inputCount} input / {outputCount} output</span>
                         </div>
                       </td>
-                      <td className="px-4 py-4">
-                        <Link className="table-action" to={`/jobs/${job.id}`}>
+                      <td className="ui-table__action-cell">
+                        <Link className={getButtonClass("secondary")} to={`/jobs/${job.id}`}>
                           Open
                         </Link>
                       </td>
@@ -491,25 +501,24 @@ export function JobList() {
                 })}
               </tbody>
             </table>
-            </div>
-          </div>
+          </TableContainer>
         )}
-      </div>
+      </Card>
 
-      <div className="reference-pagination">
-        <span className="text-sm text-slate-500">
+      <div className="reference-pagination ui-pagination">
+        <span className="ui-pagination__meta">
           Page {page} of {totalPages}
         </span>
-        <div className="flex items-center gap-2">
-          <button disabled={page <= 1 || jobsQuery.isFetching} onClick={() => setPage((current) => Math.max(1, current - 1))}>
+        <div className="ui-pagination__actions">
+          <SecondaryButton disabled={page <= 1 || jobsQuery.isFetching} onClick={() => setPage((current) => Math.max(1, current - 1))}>
             Previous
-          </button>
-          <button
+          </SecondaryButton>
+          <SecondaryButton
             disabled={page >= totalPages || jobsQuery.isFetching}
             onClick={() => setPage((current) => Math.min(totalPages, current + 1))}
           >
             Next
-          </button>
+          </SecondaryButton>
         </div>
       </div>
 
@@ -578,9 +587,9 @@ export function JobList() {
                 <div className="empty-panel compact-empty">
                   <strong>Create a project first</strong>
                   <span className="text-muted">Jobs can only be created inside a project. Create one now and we'll keep you in this flow.</span>
-                  <button className="button-primary" onClick={() => setIsCreateProjectOpen(true)}>
+                  <PrimaryButton onClick={() => setIsCreateProjectOpen(true)}>
                     Create project
-                  </button>
+                  </PrimaryButton>
                 </div>
               ) : null}
 
@@ -605,14 +614,13 @@ export function JobList() {
             </div>
 
             <div className="modal-panel__footer">
-              <button className="button-secondary" onClick={() => setIsModalOpen(false)}>Cancel</button>
-              <button
-                className="button-primary"
+              <SecondaryButton onClick={() => setIsModalOpen(false)}>Cancel</SecondaryButton>
+              <PrimaryButton
                 disabled={!form.projectId || !form.name.trim() || createJob.isPending || projects.length === 0}
                 onClick={() => createJob.mutate()}
               >
                 {createJob.isPending ? "Creating..." : "Create job"}
-              </button>
+              </PrimaryButton>
             </div>
           </div>
         </div>

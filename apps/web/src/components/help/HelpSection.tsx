@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { AppIcon } from "../ui/AppIcon";
 
 type Props = {
   id: string;
@@ -23,7 +24,14 @@ export function HelpSection({ id, title, summary, action, children, advancedDeta
         </div>
         <div className="help-section__actions">
           {action}
-          {onCopyLink ? <button className="button-ghost" onClick={onCopyLink}>Copy link</button> : null}
+          {onCopyLink ? (
+            <button className="button-secondary help-section__copy-link" onClick={onCopyLink}>
+              <span className="button-icon" aria-hidden="true">
+                <AppIcon name="link" />
+              </span>
+              Copy link
+            </button>
+          ) : null}
         </div>
       </div>
       {children}

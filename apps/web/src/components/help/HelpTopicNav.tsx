@@ -13,7 +13,7 @@ export function HelpTopicNav({ topics, activeTopicId, query, onQueryChange, onTo
     <aside className="help-page__topics reference-card reference-card--soft">
       <div className="help-page__topics-header">
         <span className="reference-chip">Help & Learning</span>
-        <h1>Learn as you work</h1>
+        <strong>Learn as you work</strong>
         <p>Pick one topic, read the simple steps, then try it inside the app.</p>
       </div>
 

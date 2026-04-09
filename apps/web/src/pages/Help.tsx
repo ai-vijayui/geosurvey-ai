@@ -119,16 +119,28 @@ export function HelpPage() {
   }
 
   return (
-    <div className="help-page">
-      <HelpTopicNav
-        topics={filteredTopics}
-        activeTopicId={activeTopicId}
-        query={query}
-        onQueryChange={setQuery}
-        onTopicClick={scrollToTopic}
-      />
+    <div className="reference-page">
+      <div className="reference-page-header">
+        <div className="reference-page-header__copy">
+          <h1>Help & Learning</h1>
+          <p>Find plain-language guidance for uploads, workflow steps, map review, AI checks, and sample files without leaving the workspace.</p>
+        </div>
+        <div className="reference-actions">
+          <button className="button-secondary" onClick={() => openAiForTopic(helpTopics[0])}>Ask AI about this section</button>
+          <button className="button-secondary" onClick={() => copyLink(activeTopicId)}>Copy link</button>
+        </div>
+      </div>
 
-      <div ref={contentRef} className="help-page__content">
+      <div className="help-page">
+        <HelpTopicNav
+          topics={filteredTopics}
+          activeTopicId={activeTopicId}
+          query={query}
+          onQueryChange={setQuery}
+          onTopicClick={scrollToTopic}
+        />
+
+        <div ref={contentRef} className="help-page__content">
         <div ref={(node) => { sectionRefs.current["start-here"] = node; }}>
           <HelpSection
             id="start-here"
@@ -290,6 +302,7 @@ export function HelpPage() {
             {acceptedFileHelp.map((item) => <span key={item}>{item}</span>)}
           </div>
         </section>
+        </div>
       </div>
     </div>
   );
