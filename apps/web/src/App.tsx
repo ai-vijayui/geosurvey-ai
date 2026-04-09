@@ -2,6 +2,14 @@ import { SignIn, SignUp, useAuth } from "@clerk/clerk-react";
 import type { ReactNode } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { Layout } from "./components/Layout";
+import { MarketingLayout } from "./marketing/components/MarketingLayout";
+import { AboutPage } from "./marketing/pages/AboutPage";
+import { BlogPage } from "./marketing/pages/BlogPage";
+import { ContactPage } from "./marketing/pages/ContactPage";
+import { FeaturesPage } from "./marketing/pages/FeaturesPage";
+import { HomePage } from "./marketing/pages/HomePage";
+import { NotFoundPage } from "./marketing/pages/NotFoundPage";
+import { PricingPage } from "./marketing/pages/PricingPage";
 import { AiWorkspaceHubPage } from "./pages/AiWorkspaceHubPage";
 import { Dashboard } from "./pages/Dashboard";
 import { GnssProcessor } from "./pages/GnssProcessor";
@@ -163,11 +171,6 @@ function AuthGuardRoute() {
   return isSignedIn ? <Layout /> : <Navigate to="/sign-in" replace />;
 }
 
-function LandingRoute() {
-  const { isSignedIn } = useAuth();
-  return <Navigate to={isSignedIn ? "/dashboard" : "/sign-in"} replace />;
-}
-
 function SignInRoute() {
   const { isSignedIn } = useAuth();
   if (isSignedIn) {
@@ -200,7 +203,14 @@ export default function App() {
 
   return (
     <Routes>
-      <Route path="/" element={authEnabled ? <LandingRoute /> : <Layout />} />
+      <Route element={<MarketingLayout />}>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/features" element={<FeaturesPage />} />
+        <Route path="/pricing" element={<PricingPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/blog" element={<BlogPage />} />
+      </Route>
       <Route path="/sign-in" element={authEnabled ? <SignInRoute /> : <DevAuthPage title="Sign in" />} />
       <Route path="/sign-up" element={authEnabled ? <SignUpRoute /> : <DevAuthPage title="Sign up" />} />
       <Route path="/" element={authEnabled ? <AuthGuardRoute /> : <Layout />}>
@@ -215,6 +225,9 @@ export default function App() {
         <Route path="viewer/:id" element={<PointCloudViewer />} />
         <Route path="reports" element={<ReportsPage />} />
         <Route path="settings" element={<SettingsPage />} />
+      </Route>
+      <Route element={<MarketingLayout />}>
+        <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
   );

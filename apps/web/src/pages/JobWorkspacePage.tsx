@@ -12,6 +12,12 @@ import { EmptyState } from "../components/feedback/EmptyState";
 import { UploadHelpPanel } from "../components/help/UploadHelpPanel";
 import { SkeletonBlock } from "../components/feedback/SkeletonBlock";
 import { RightRailPanel } from "../components/shell/RightRailPanel";
+import { getButtonClass, GhostButton, PrimaryButton, SecondaryButton } from "../components/ui/Button";
+import { Card } from "../components/ui/Card";
+import { PageHeader } from "../components/ui/PageHeader";
+import { SectionHeader } from "../components/ui/SectionHeader";
+import { StatCard } from "../components/ui/StatCard";
+import { StatusBadge } from "../components/ui/StatusBadge";
 import { WorkflowStepper } from "../components/workflow/WorkflowStepper";
 import { useNotifications } from "../context/NotificationContext";
 import { apiDelete, apiGet, apiPatch, apiPost } from "../lib/api";
@@ -149,21 +155,25 @@ function groupInsights(job: JobDetailRecord) {
 
 function tabClasses(active: boolean) {
   return active
-    ? "inline-flex items-center rounded-full border border-emerald-600 bg-emerald-600 px-4 py-2 text-sm font-semibold text-white"
-    : "inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 transition hover:border-slate-300 hover:bg-slate-50";
-}
-
-function panelClasses() {
-  return "space-y-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm";
+    ? "ui-job-tab ui-job-tab--active"
+    : "ui-job-tab";
 }
 
 function metricTile(label: string, value: string | number) {
   return (
-    <div key={label} className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4">
-      <span className="block text-xs font-medium uppercase tracking-[0.14em] text-slate-500">{label}</span>
-      <strong className="mt-2 block text-base font-semibold text-slate-900">{value}</strong>
+    <div key={label} className="ui-metric-tile">
+      <span className="ui-metric-tile__label">{label}</span>
+      <strong className="ui-metric-tile__value">{value}</strong>
     </div>
   );
+}
+
+function getStatusTone(status: string) {
+  if (status === "FAILED") return "error";
+  if (status === "COMPLETED") return "success";
+  if (status === "REVIEW") return "warning";
+  if (status === "PROCESSING") return "info";
+  return "default";
 }
 
 export function JobWorkspacePage() {
@@ -358,46 +368,50 @@ export function JobWorkspacePage() {
 
   return (
     <div className="reference-page">
-      <section className="reference-card reference-card--accent space-y-5">
-        <span className="reference-chip">Job workspace</span>
-        <div className="reference-page-header">
-          <div className="reference-page-header__copy">
-            <span className="block text-sm leading-6 text-slate-500">{projectName} / {job.name}</span>
-            <h1>{job.name}</h1>
-            <p>
-              Move this survey job from source upload through processing, AI review, and export without losing the next step.
-            </p>
-          </div>
-          <div className="reference-actions">
-            <span className="type-badge">{formatLabel(job.type)}</span>
-            <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-100 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-600">
-              {job.status}
-            </span>
-            <Link className="button-secondary" to="/help#workflow-guide">Show Me How</Link>
-            <Link className="button-secondary" to="/help#common-problems">Explain This Page</Link>
-          </div>
-        </div>
+      <Card variant="accent" className="space-y-5">
+        <PageHeader
+          eyebrow="Job workspace"
+          title={job.name}
+          subtitle="Move this survey job from source upload through processing, AI review, and export without losing the next step."
+          actions={(
+            <>
+              <StatusBadge label={formatLabel(job.type)} />
+              <StatusBadge label={job.status} tone={getStatusTone(job.status)} />
+              <Link className={getButtonClass("secondary")} to="/help#workflow-guide">Show Me How</Link>
+              <Link className={getButtonClass("secondary")} to="/help#common-problems">Explain This Page</Link>
+            </>
+          )}
+        >
+          <span className="text-sm leading-6 text-[var(--text-secondary)]">{projectName} / {job.name}</span>
+        </PageHeader>
 
         <WorkflowStepper steps={workflowSteps} />
 
-        <div className="flex flex-wrap gap-2">
+        <div className="ui-job-tabs">
           {tabs.map((tab) => (
             <button key={tab} className={tabClasses(activeTab === tab)} onClick={() => openTab(tab)}>
               {tab}
             </button>
           ))}
-          <button className="button-primary" onClick={() => openTab(nextAction.tab)}>
+          <PrimaryButton onClick={() => openTab(nextAction.tab)}>
             {nextAction.actionLabel}
-          </button>
+          </PrimaryButton>
         </div>
-      </section>
+      </Card>
+
+      <div className="job-workspace-stats">
+        <StatCard label="Status" value={job.status} meta="Current workflow state" />
+        <StatCard label="Source files" value={job.inputFiles.length} meta="Inputs attached to this job" />
+        <StatCard label="Outputs" value={job.outputs.length} meta="Generated deliverables available" />
+        <StatCard label="AI insights" value={job.aiInsights.length} meta="Model findings ready for review" />
+      </div>
 
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
         <div className="min-w-0 space-y-6">
 
           {activeTab === "Upload" ? (
             <div className="space-y-6">
-              <section className="reference-card space-y-4">
+              <Card className="space-y-4">
                 <UploadHelpPanel
                   sampleLinks={[
                     { label: "Sample GNSS CSV", href: "/samples/sample-gnss-points.csv" },
@@ -411,20 +425,19 @@ export function JobWorkspacePage() {
                   onUploadComplete={() => void queryClient.invalidateQueries({ queryKey: ["job", id] })}
                   showStartProcessingButton={false}
                 />
-              </section>
+              </Card>
 
-              <section className="reference-card space-y-4">
-                <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-                  <div className="space-y-1">
-                    <strong className="block text-lg font-semibold text-slate-900">Current source inventory</strong>
-                    <span className="block text-sm leading-6 text-slate-500">Keep the upload list clean before starting processing.</span>
-                  </div>
+              <Card className="space-y-4">
+                <SectionHeader
+                  title="Current source inventory"
+                  subtitle="Keep the upload list clean before starting processing."
+                  action={job.inputFiles.length > 0 ? <PrimaryButton onClick={() => openTab("Processing")}>Next: Start Processing</PrimaryButton> : null}
+                />
+                
+                
                   {job.inputFiles.length > 0 ? (
-                    <button className="button-primary" onClick={() => openTab("Processing")}>
-                      Next: Start Processing
-                    </button>
+                    null
                   ) : null}
-                </div>
 
                 {job.inputFiles.length === 0 ? (
                   <EmptyState
@@ -432,7 +445,8 @@ export function JobWorkspacePage() {
                     eyebrow="Upload"
                     title="No files uploaded yet"
                     description="Upload survey files to continue. Once valid files are attached, processing becomes available."
-                    action={<div className="reference-actions"><a className="button-secondary" href="/samples/sample-gnss-points.csv" download>Download Sample</a><Link className="button-secondary" to="/help#sample-files">Open Help</Link></div>}
+                    icon="upload"
+                    action={<div className="reference-actions"><a className={getButtonClass("secondary")} href="/samples/sample-gnss-points.csv" download>Download Sample</a><Link className={getButtonClass("secondary")} to="/help#sample-files">Open Help</Link></div>}
                   />
                 ) : (
                   <div className="space-y-3">
@@ -443,63 +457,60 @@ export function JobWorkspacePage() {
                           <span className="block text-sm leading-6 text-slate-500">{file.fileType} / {formatFileSize(file.sizeBytes)} / {formatDate(file.uploadedAt)}</span>
                         </div>
                         <div className="flex flex-wrap gap-2">
-                          <button onClick={() => void handleDownload(file)}>Download</button>
-                          <button disabled={deleteFile.isPending} onClick={() => deleteFile.mutate(file.id)}>Remove</button>
+                          <SecondaryButton onClick={() => void handleDownload(file)}>Download</SecondaryButton>
+                          <GhostButton disabled={deleteFile.isPending} onClick={() => deleteFile.mutate(file.id)}>Remove</GhostButton>
                         </div>
                       </div>
                     ))}
                   </div>
                 )}
-              </section>
+              </Card>
             </div>
           ) : null}
 
           {activeTab === "Processing" ? (
             <div className="space-y-6">
-              <section className="reference-card space-y-4">
-                <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-                  <div className="space-y-1">
-                    <strong className="block text-lg font-semibold text-slate-900">Processing pipeline</strong>
-                    <span className="block text-sm leading-6 text-slate-500">Track validation, geometry, metrics, output generation, and AI analysis in one place.</span>
-                  </div>
-                  <button
-                    className="button-primary"
+              <Card className="space-y-4">
+                <SectionHeader
+                  title="Processing pipeline"
+                  subtitle="Track validation, geometry, metrics, output generation, and AI analysis in one place."
+                  action={(
+                    <PrimaryButton
                     disabled={startProcessing.isPending || Boolean(processingBlockedReason)}
                     onClick={() => startProcessing.mutate()}
                   >
                     {startProcessing.isPending ? "Starting..." : "Start Processing"}
-                  </button>
-                </div>
+                    </PrimaryButton>
+                  )}
+                />
 
                 {processingBlockedReason ? (
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-sm leading-6 text-slate-600">{processingBlockedReason}</div>
+                  <div className="ui-inline-note">{processingBlockedReason}</div>
                 ) : null}
                 <ProgressTracker jobId={id} onComplete={() => void queryClient.invalidateQueries({ queryKey: ["job", id] })} />
 
                 <div className="flex flex-wrap gap-2">
                   {nextStatuses.map((status) => (
-                    <button key={status} disabled={updateStatus.isPending} onClick={() => updateStatus.mutate(status)}>
+                    <SecondaryButton key={status} disabled={updateStatus.isPending} onClick={() => updateStatus.mutate(status)}>
                       Mark {status}
-                    </button>
+                    </SecondaryButton>
                   ))}
-                  <button onClick={() => setShowLogs((value) => !value)}>
+                  <GhostButton onClick={() => setShowLogs((value) => !value)}>
                     {showLogs ? "Hide log panel" : "Show log panel"}
-                  </button>
+                  </GhostButton>
                 </div>
-              </section>
+              </Card>
 
               {showLogs ? (
-                <section className="reference-card space-y-4">
-                  <div className="space-y-1">
-                    <strong className="block text-lg font-semibold text-slate-900">Processing log</strong>
-                    <span className="block text-sm leading-6 text-slate-500">Live timeline from validation through AI insight generation.</span>
-                  </div>
+                <Card className="space-y-4">
+                  <SectionHeader title="Processing log" subtitle="Live timeline from validation through AI insight generation." />
                   {processingTimeline.length === 0 ? (
                     <EmptyState
                       compact
                       eyebrow="Logs"
                       title="No timeline yet"
                       description="Processing events will appear here after the job enters the queue."
+                      icon="processing"
                     />
                   ) : (
                     <div className="space-y-3">
@@ -510,25 +521,22 @@ export function JobWorkspacePage() {
                             <span className="block text-sm leading-6 text-slate-500">{entry.message}</span>
                           </div>
                           <div className="space-y-1 md:text-right">
-                            <span className="inline-flex items-center rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-600">{entry.status}</span>
+                            <StatusBadge label={entry.status} tone={getStatusTone(entry.status)} />
                             <span className="block text-sm leading-6 text-slate-500">{formatDate(entry.timestamp)}</span>
                           </div>
                         </div>
                       ))}
                     </div>
                   )}
-                </section>
+                </Card>
               ) : null}
             </div>
           ) : null}
 
           {activeTab === "Map" ? (
             <div className="space-y-6">
-              <section className="reference-card space-y-4">
-                <div className="space-y-1">
-                  <strong className="block text-lg font-semibold text-slate-900">Survey map workspace</strong>
-                  <span className="block text-sm leading-6 text-slate-500">Review boundaries, points, markers, and imported GNSS data together.</span>
-                </div>
+              <Card className="space-y-4">
+                <SectionHeader title="Survey map workspace" subtitle="Review boundaries, points, markers, and imported GNSS data together." />
                 {mapGeojson ? (
                   <MapView geojson={mapGeojson as never} height="460px" autoFit fitSignal={fitSignal} />
                 ) : (
@@ -537,9 +545,10 @@ export function JobWorkspacePage() {
                     eyebrow="Map"
                     title="No map data yet"
                     description="Upload files or import GNSS data first, then save a boundary to populate the map workspace."
+                    icon="map"
                   />
                 )}
-              </section>
+              </Card>
 
               <BoundaryEditor
                 jobId={id}
@@ -552,11 +561,8 @@ export function JobWorkspacePage() {
                 }}
               />
 
-              <section className="reference-card space-y-4">
-                <div className="space-y-1">
-                  <strong className="block text-lg font-semibold text-slate-900">GNSS import</strong>
-                  <span className="block text-sm leading-6 text-slate-500">Bring more observations into the same survey workspace.</span>
-                </div>
+              <Card className="space-y-4">
+                <SectionHeader title="GNSS import" subtitle="Bring more observations into the same survey workspace." />
                 <GnssImportPanel
                   fixedJobId={id}
                   importedGeojson={gnssGeojson as never}
@@ -565,33 +571,32 @@ export function JobWorkspacePage() {
                     void queryClient.invalidateQueries({ queryKey: ["job", id] });
                   }}
                 />
-              </section>
+              </Card>
             </div>
           ) : null}
 
           {activeTab === "AI Insights" ? (
             <div className="space-y-6">
-              <section className="reference-card space-y-4">
-                <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-                  <div className="space-y-1">
-                    <strong className="block text-lg font-semibold text-slate-900">AI review workspace</strong>
-                    <span className="block text-sm leading-6 text-slate-500">Surface the highest-risk findings first, then ask the assistant what to do next.</span>
-                  </div>
-                  <button className="button-primary" onClick={() => runAiAnalysis.mutate()} disabled={runAiAnalysis.isPending}>
+              <Card className="space-y-4">
+                <SectionHeader
+                  title="AI review workspace"
+                  subtitle="Surface the highest-risk findings first, then ask the assistant what to do next."
+                  action={<PrimaryButton onClick={() => runAiAnalysis.mutate()} disabled={runAiAnalysis.isPending}>
                     {runAiAnalysis.isPending ? "Running..." : "Run AI Analysis"}
-                  </button>
-                </div>
-              </section>
+                  </PrimaryButton>}
+                />
+              </Card>
 
               {job.aiInsights.length === 0 ? (
                 <EmptyState
                   eyebrow="AI review"
                   title="No insights yet"
                   description="Run AI analysis after files are uploaded or processing is complete to generate QA findings and recommendations."
+                  icon="ai"
                   action={
-                    <button className="button-primary" onClick={() => runAiAnalysis.mutate()} disabled={runAiAnalysis.isPending}>
+                    <PrimaryButton onClick={() => runAiAnalysis.mutate()} disabled={runAiAnalysis.isPending}>
                       {runAiAnalysis.isPending ? "Running..." : "Run AI Analysis"}
-                    </button>
+                    </PrimaryButton>
                   }
                 />
               ) : (
@@ -602,17 +607,14 @@ export function JobWorkspacePage() {
                     ["Info", insightGroups.info]
                   ] as Array<[string, typeof job.aiInsights]>).map(([label, insights]) =>
                     insights.length > 0 ? (
-                      <section key={label} className="reference-card space-y-4">
-                        <div className="flex items-center justify-between gap-3">
-                          <strong className="text-lg font-semibold text-slate-900">{label}</strong>
-                          <span className="text-sm text-slate-500">{insights.length} finding(s)</span>
-                        </div>
+                      <Card key={label} className="space-y-4">
+                        <SectionHeader title={label} action={<span className="text-sm text-[var(--text-muted)]">{insights.length} finding(s)</span>} />
                         <div className="grid gap-4 xl:grid-cols-2">
                           {insights.map((insight) => (
                             <AiInsightCard key={insight.id} insight={insight} />
                           ))}
                         </div>
-                      </section>
+                      </Card>
                     ) : null
                   )}
                 </div>
@@ -622,30 +624,29 @@ export function JobWorkspacePage() {
           ) : null}
 
           {activeTab === "Outputs" ? (
-            <section className="reference-card space-y-4">
-              <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-                <div className="space-y-1">
-                  <strong className="block text-lg font-semibold text-slate-900">Output inventory</strong>
-                  <span className="block text-sm leading-6 text-slate-500">Review deliverables, download files, and confirm the survey is ready for export.</span>
-                </div>
-                <div className="flex flex-wrap gap-2">
+            <Card className="space-y-4">
+              <SectionHeader
+                title="Output inventory"
+                subtitle="Review deliverables, download files, and confirm the survey is ready for export."
+                action={<div className="flex flex-wrap gap-2">
                   {pointCloudAvailable ? (
-                    <Link className="button-secondary" to={`/viewer/${id}`}>
+                    <Link className={getButtonClass("secondary")} to={`/viewer/${id}`}>
                       Open Point Cloud
                     </Link>
                   ) : null}
-                  <Link className="table-action" to="/reports">
+                  <Link className={getButtonClass("secondary")} to="/reports">
                     Open reports inventory
                   </Link>
-                </div>
-              </div>
+                </div>}
+              />
 
               {job.outputs.length === 0 ? (
                 <EmptyState
                   eyebrow="Export"
                   title="No outputs available yet"
                   description="Outputs appear here after processing completes and generators produce deliverables."
-                  action={<button onClick={() => openTab("Processing")}>Open Processing</button>}
+                  icon="reports"
+                  action={<SecondaryButton onClick={() => openTab("Processing")}>Open Processing</SecondaryButton>}
                 />
               ) : (
                 <div className="space-y-3">
@@ -657,17 +658,17 @@ export function JobWorkspacePage() {
                       </div>
                       <div className="flex flex-wrap gap-2">
                         {output.fileType === "POINT_CLOUD" ? (
-                          <Link className="button-secondary" to={`/viewer/${id}`}>
+                          <Link className={getButtonClass("secondary")} to={`/viewer/${id}`}>
                             View
                           </Link>
                         ) : null}
-                        <button onClick={() => void handleDownload(output)}>Download</button>
+                        <SecondaryButton onClick={() => void handleDownload(output)}>Download</SecondaryButton>
                       </div>
                     </div>
                   ))}
                 </div>
               )}
-            </section>
+            </Card>
           ) : null}
         </div>
 
@@ -675,9 +676,9 @@ export function JobWorkspacePage() {
           <RightRailPanel title="Next best action">
             <strong>{nextAction.title}</strong>
             <span className="text-slate-500">{nextAction.body}</span>
-            <button className="button-primary" onClick={() => openTab(nextAction.tab)}>
+            <PrimaryButton onClick={() => openTab(nextAction.tab)}>
               {nextAction.actionLabel}
-            </button>
+            </PrimaryButton>
           </RightRailPanel>
 
           <RightRailPanel title="Status">
@@ -694,10 +695,10 @@ export function JobWorkspacePage() {
               <span className="text-slate-500">No live activity yet. Start processing to generate timeline updates.</span>
             ) : (
               processingTimeline.slice(-3).reverse().map((entry) => (
-                <div key={`${entry.stage}-${entry.timestamp}`} className="space-y-1 rounded-2xl border border-slate-200 bg-slate-50/70 p-3">
-                  <strong className="block text-sm font-semibold text-slate-900">{entry.stage}</strong>
-                  <span className="block text-sm leading-6 text-slate-500">{entry.message}</span>
-                  <span className="block text-sm leading-6 text-slate-500">{formatDate(entry.timestamp)}</span>
+                <div key={`${entry.stage}-${entry.timestamp}`} className="ui-activity-card">
+                  <strong className="block text-sm font-semibold text-[var(--text-primary)]">{entry.stage}</strong>
+                  <span className="block text-sm leading-6 text-[var(--text-secondary)]">{entry.message}</span>
+                  <span className="block text-sm leading-6 text-[var(--text-muted)]">{formatDate(entry.timestamp)}</span>
                 </div>
               ))
             )}
@@ -725,11 +726,11 @@ export function JobWorkspacePage() {
               {metricTile("Marker", savedMarker ? "Saved" : "Missing")}
             </div>
             {pointCloudAvailable ? (
-              <Link className="button-secondary" to={`/viewer/${id}`}>
+              <Link className={getButtonClass("secondary")} to={`/viewer/${id}`}>
                 Open point cloud viewer
               </Link>
             ) : null}
-            <button onClick={() => setFitSignal((value) => value + 1)}>Fit map to current data</button>
+            <SecondaryButton onClick={() => setFitSignal((value) => value + 1)}>Fit map to current data</SecondaryButton>
           </RightRailPanel>
         </aside>
       </div>

@@ -1,3 +1,5 @@
+import { PrimaryButton } from "../ui/Button";
+
 type Props = {
   value: string;
   disabled?: boolean;
@@ -24,9 +26,9 @@ export function AiInputBar({ value, disabled, onChange, onSend }: Props) {
         />
         <div className="ai-input-actions">
           <span className="text-muted">Commands and chat both work here</span>
-          <button type="button" className="button-primary" disabled={disabled || !value.trim()} onClick={onSend}>
+          <PrimaryButton type="button" disabled={disabled || !value.trim()} onClick={onSend}>
             Send
-          </button>
+          </PrimaryButton>
         </div>
       </div>
     </div>

@@ -6,6 +6,13 @@ import { JobVisualSummary } from "../components/JobVisualSummary";
 import { EmptyState } from "../components/feedback/EmptyState";
 import { SkeletonBlock } from "../components/feedback/SkeletonBlock";
 import { useNotifications } from "../context/NotificationContext";
+import { getButtonClass, PrimaryButton, SecondaryButton } from "../components/ui/Button";
+import { Card } from "../components/ui/Card";
+import { FilterBar } from "../components/ui/FilterBar";
+import { SearchInput, SelectField } from "../components/ui/Fields";
+import { PageHeader } from "../components/ui/PageHeader";
+import { SectionHeader } from "../components/ui/SectionHeader";
+import { StatCard } from "../components/ui/StatCard";
 import { apiGet, type PaginatedResponse } from "../lib/api";
 
 type JobSummary = {
@@ -159,98 +166,58 @@ export function ReportsPage() {
 
   return (
     <div className="reference-page">
-      <div className="reference-page-header">
-        <div className="reference-page-header__copy">
-          <h1>Reports</h1>
-          <p>
-            Browse the artifact inventory across jobs, including generated outputs and retained source files.
-          </p>
-        </div>
-        <div className="reference-actions">
-          <Link className="button-primary dashboard-cta-link" to="/jobs?createJob=1">
-            Create Job
-          </Link>
-        </div>
-      </div>
+      <PageHeader
+        title="Reports"
+        subtitle="Browse the artifact inventory across jobs, including generated outputs and retained source files."
+        actions={<Link className={getButtonClass("primary")} to="/jobs?createJob=1">Create Job</Link>}
+      />
 
       <div className="reference-panel-grid">
-        <div className="reference-card reference-card--accent space-y-4">
+        <Card variant="accent" className="space-y-4">
           <span className="reference-chip">Artifact library</span>
-          <strong className="block text-2xl font-semibold leading-tight text-slate-900">Review uploads and exports from one searchable workspace.</strong>
-          <span className="block max-w-2xl text-sm leading-6 text-slate-500">
+          <strong className="block text-2xl font-semibold leading-tight text-[var(--text-primary)]">Review uploads and exports from one searchable workspace.</strong>
+          <span className="block max-w-2xl text-sm leading-6 text-[var(--text-secondary)]">
             Filter by job, file type, artifact kind, and date so field teams can find the right deliverable quickly on desktop or mobile.
           </span>
-        </div>
-        <div className="reference-metrics">
-          <div className="reference-metric">
-            <span className="reference-metric__label">Artifacts in view</span>
-            <strong className="reference-metric__value">{filteredArtifacts.length}</strong>
-            <span className="reference-metric__meta">All files matching the current filters</span>
-          </div>
-          <div className="reference-metric">
-            <span className="reference-metric__label">Generated outputs</span>
-            <strong className="reference-metric__value">{artifactRows.filter((row) => row.artifactKind === "Output").length}</strong>
-            <span className="reference-metric__meta">Exports ready for review or download</span>
-          </div>
-          <div className="reference-metric">
-            <span className="reference-metric__label">Source files retained</span>
-            <strong className="reference-metric__value">{artifactRows.filter((row) => row.artifactKind === "Input").length}</strong>
-            <span className="reference-metric__meta">Original uploads still available in storage</span>
-          </div>
-          <div className="reference-metric">
-            <span className="reference-metric__label">Jobs represented</span>
-            <strong className="reference-metric__value">{Object.keys(groupedArtifacts).length}</strong>
-            <span className="reference-metric__meta">Jobs currently represented in the artifact library</span>
-          </div>
+        </Card>
+        <div className="jobs-kpi-grid">
+          <StatCard label="Artifacts in view" value={filteredArtifacts.length} meta="All files matching the current filters" />
+          <StatCard label="Generated outputs" value={artifactRows.filter((row) => row.artifactKind === "Output").length} meta="Exports ready for review or download" />
+          <StatCard label="Source files retained" value={artifactRows.filter((row) => row.artifactKind === "Input").length} meta="Original uploads still available in storage" />
+          <StatCard label="Jobs represented" value={Object.keys(groupedArtifacts).length} meta="Jobs currently represented in the artifact library" />
         </div>
       </div>
 
-      <div className="reference-card space-y-4">
-        <div className="reference-filter-bar">
-          <label className="grid gap-2 text-sm text-slate-600">
-            <span>Search</span>
-            <input className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-slate-300 focus:ring-2 focus:ring-emerald-500/20" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search artifact, job, project, or type" />
-          </label>
-
-          <label className="grid gap-2 text-sm text-slate-600">
-            <span>Job</span>
-            <select className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-emerald-500/20" value={selectedJob} onChange={(event) => setSelectedJob(event.target.value)}>
-              <option value="all">All jobs</option>
-              {(jobsQuery.data?.data ?? []).map((job) => (
-                <option key={job.id} value={job.id}>
-                  {job.name}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="grid gap-2 text-sm text-slate-600">
-            <span>Artifact kind</span>
-            <select className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-emerald-500/20" value={selectedKind} onChange={(event) => setSelectedKind(event.target.value as "all" | "Input" | "Output") }>
-              <option value="all">All artifacts</option>
-              <option value="Output">Outputs</option>
-              <option value="Input">Inputs</option>
-            </select>
-          </label>
-
-          <label className="grid gap-2 text-sm text-slate-600">
-            <span>Type</span>
-            <select className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-emerald-500/20" value={selectedType} onChange={(event) => setSelectedType(event.target.value)}>
-              <option value="all">All types</option>
-              {Array.from(new Set(artifactRows.map((row) => row.artifactType))).sort().map((type) => (
-                <option key={type} value={type}>
-                  {formatLabel(type)}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="grid gap-2 text-sm text-slate-600">
-            <span>Date</span>
-            <input className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-emerald-500/20" type="date" value={selectedDate} onChange={(event) => setSelectedDate(event.target.value)} />
-          </label>
-        </div>
-      </div>
+      <FilterBar
+        footer={<SecondaryButton onClick={() => { setSelectedJob("all"); setSelectedType("all"); setSelectedKind("all"); setSelectedDate(""); setSearch(""); }}>Reset filters</SecondaryButton>}
+      >
+        <SearchInput value={search} onChange={(event) => setSearch(event.target.value)} label="Search" placeholder="Search artifact, job, project, or type" />
+        <SelectField label="Job" value={selectedJob} onChange={(event) => setSelectedJob(event.target.value)}>
+          <option value="all">All jobs</option>
+          {(jobsQuery.data?.data ?? []).map((job) => (
+            <option key={job.id} value={job.id}>
+              {job.name}
+            </option>
+          ))}
+        </SelectField>
+        <SelectField label="Artifact kind" value={selectedKind} onChange={(event) => setSelectedKind(event.target.value as "all" | "Input" | "Output")}>
+          <option value="all">All artifacts</option>
+          <option value="Output">Outputs</option>
+          <option value="Input">Inputs</option>
+        </SelectField>
+        <SelectField label="Type" value={selectedType} onChange={(event) => setSelectedType(event.target.value)}>
+          <option value="all">All types</option>
+          {Array.from(new Set(artifactRows.map((row) => row.artifactType))).sort().map((type) => (
+            <option key={type} value={type}>
+              {formatLabel(type)}
+            </option>
+          ))}
+        </SelectField>
+        <label className="ui-field">
+          <span className="ui-field__label">Date</span>
+          <input className="ui-input" type="date" value={selectedDate} onChange={(event) => setSelectedDate(event.target.value)} />
+        </label>
+      </FilterBar>
 
       {jobsQuery.isLoading || reportJobsQuery.isLoading ? (
         <SkeletonBlock lines={4} />
@@ -259,36 +226,32 @@ export function ReportsPage() {
           eyebrow="Unavailable"
           title="Reports could not be loaded"
           description="The artifact inventory is temporarily unavailable. Retry to restore uploads, outputs, and download actions."
-          action={<button className="button-primary" onClick={() => { void jobsQuery.refetch(); void projectsQuery.refetch(); void reportJobsQuery.refetch(); }}>Retry</button>}
+          icon="reports"
+          action={<PrimaryButton onClick={() => { void jobsQuery.refetch(); void projectsQuery.refetch(); void reportJobsQuery.refetch(); }}>Retry</PrimaryButton>}
         />
       ) : artifactRows.length === 0 ? (
         <EmptyState
           title="No artifacts found"
           description="Outputs and uploaded source files will appear here as the workflow progresses. Create a job, upload files, and start processing to populate this inventory."
-          action={<Link className="button-primary dashboard-cta-link" to="/jobs?createJob=1">Create Job</Link>}
+          icon="reports"
+          action={<Link className={getButtonClass("primary")} to="/jobs?createJob=1">Create Job</Link>}
         />
       ) : filteredArtifacts.length === 0 ? (
         <EmptyState
           eyebrow="Filters"
           title="No artifacts match the current filters"
           description="Try clearing one or more filters or search terms to see the full artifact library again."
-          action={<button className="button-primary" onClick={() => { setSelectedJob("all"); setSelectedType("all"); setSelectedKind("all"); setSelectedDate(""); setSearch(""); }}>Reset Filters</button>}
+          icon="search"
+          action={<PrimaryButton onClick={() => { setSelectedJob("all"); setSelectedType("all"); setSelectedKind("all"); setSelectedDate(""); setSearch(""); }}>Reset Filters</PrimaryButton>}
         />
       ) : (
         Object.entries(groupedArtifacts).map(([jobId, rows]) => (
-          <div key={jobId} className="reference-card space-y-4">
-            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-              <div className="space-y-1">
-                <strong className="block text-lg font-semibold text-slate-900">{rows[0].jobName}</strong>
-                <span className="text-sm text-slate-500">{rows[0].projectName}</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="text-sm text-slate-500">{rows.length} artifact(s)</span>
-                <Link className="table-action" to={`/jobs/${jobId}`}>
-                  Open job
-                </Link>
-              </div>
-            </div>
+          <Card key={jobId} className="space-y-4">
+            <SectionHeader
+              title={rows[0].jobName}
+              subtitle={rows[0].projectName}
+              action={<div className="flex items-center gap-3"><span className="text-sm text-[var(--text-muted)]">{rows.length} artifact(s)</span><Link className={getButtonClass("secondary")} to={`/jobs/${jobId}`}>Open job</Link></div>}
+            />
 
             <JobVisualSummary job={jobsById.get(jobId)} />
 
@@ -301,13 +264,13 @@ export function ReportsPage() {
                   </span>
                 </div>
                 {row.downloadPath ? (
-                  <button className="button-secondary" onClick={() => void openArtifact(row.downloadPath!)}>Download</button>
+                  <SecondaryButton onClick={() => void openArtifact(row.downloadPath!)}>Download</SecondaryButton>
                 ) : (
                   <button disabled title="Download path unavailable for this artifact.">Download unavailable</button>
                 )}
               </div>
             ))}
-          </div>
+          </Card>
         ))
       )}
     </div>

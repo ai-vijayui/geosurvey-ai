@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import type { BoundaryGeoJson, BoundaryState, MapMarker } from "@geosurvey-ai/shared";
 import { MapView } from "./MapView";
+import { GhostButton, PrimaryButton, SecondaryButton } from "./ui/Button";
+import { Card } from "./ui/Card";
+import { SectionHeader } from "./ui/SectionHeader";
 import { apiDelete, apiPost } from "../lib/api";
 
 type Props = {
@@ -127,85 +130,69 @@ export function BoundaryEditor({ jobId, pointsGeojson, initialBoundary, initialM
 
   return (
     <div className="grid gap-6">
-      <section className="space-y-5 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="space-y-1">
-          <strong className="block text-lg font-semibold text-slate-900">Boundary editor</strong>
-          <span className="block text-sm leading-6 text-slate-500">Click the map to place a marker, then switch into draw mode to create or revise the saved polygon.</span>
-        </div>
+      <Card className="space-y-5">
+        <SectionHeader title="Boundary editor" subtitle="Click the map to place a marker, then switch into draw mode to create or revise the saved polygon." />
 
         <div className="flex flex-wrap gap-2">
-          <button className={isDrawing ? "button-primary" : ""} onClick={() => setIsDrawing((value) => !value)}>
+          {isDrawing ? (
+            <PrimaryButton onClick={() => setIsDrawing((value) => !value)}>
+              Finish editing
+            </PrimaryButton>
+          ) : (
+            <SecondaryButton onClick={() => setIsDrawing((value) => !value)}>
             {isDrawing ? "Finish editing" : initialBoundary ? "Edit polygon" : "Start drawing"}
-          </button>
-          <button disabled={vertices.length === 0} onClick={() => setVertices((current) => current.slice(0, -1))}>
-            Undo vertex
-          </button>
-          <button disabled={!canSave || saveState !== "idle"} onClick={() => void saveBoundary()}>
-            {saveState === "saving" ? "Saving..." : "Save map data"}
-          </button>
-          <button disabled={saveState !== "idle" || (!initialBoundary && vertices.length === 0 && !initialMarker && !marker)} onClick={() => void clearBoundary()}>
-            {saveState === "clearing" ? "Clearing..." : "Clear saved map data"}
-          </button>
+            </SecondaryButton>
+          )}
+          <GhostButton disabled={vertices.length === 0} onClick={() => setVertices((current) => current.slice(0, -1))}>Undo vertex</GhostButton>
+          <PrimaryButton disabled={!canSave || saveState !== "idle"} onClick={() => void saveBoundary()}>{saveState === "saving" ? "Saving..." : "Save map data"}</PrimaryButton>
+          <GhostButton disabled={saveState !== "idle" || (!initialBoundary && vertices.length === 0 && !initialMarker && !marker)} onClick={() => void clearBoundary()}>{saveState === "clearing" ? "Clearing..." : "Clear saved map data"}</GhostButton>
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4">
-            <span className="block text-xs font-medium uppercase tracking-[0.14em] text-slate-500">Draft vertices</span>
-            <strong className="mt-2 block text-base font-semibold text-slate-900">{vertices.length}</strong>
-          </div>
-          <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4">
-            <span className="block text-xs font-medium uppercase tracking-[0.14em] text-slate-500">Marker</span>
-            <strong className="mt-2 block text-base font-semibold text-slate-900">{marker ? "Placed" : "Missing"}</strong>
-          </div>
-          <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4">
-            <span className="block text-xs font-medium uppercase tracking-[0.14em] text-slate-500">Draft polygon</span>
-            <strong className="mt-2 block text-base font-semibold text-slate-900">{draftBoundary ? "Ready" : "Incomplete"}</strong>
-          </div>
-          <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4">
-            <span className="block text-xs font-medium uppercase tracking-[0.14em] text-slate-500">Saved geometry</span>
-            <strong className="mt-2 block text-base font-semibold text-slate-900">{hasPersistedGeometry ? "Present" : "None yet"}</strong>
-          </div>
+          <div className="ui-metric-tile"><span className="ui-metric-tile__label">Draft vertices</span><strong className="ui-metric-tile__value">{vertices.length}</strong></div>
+          <div className="ui-metric-tile"><span className="ui-metric-tile__label">Marker</span><strong className="ui-metric-tile__value">{marker ? "Placed" : "Missing"}</strong></div>
+          <div className="ui-metric-tile"><span className="ui-metric-tile__label">Draft polygon</span><strong className="ui-metric-tile__value">{draftBoundary ? "Ready" : "Incomplete"}</strong></div>
+          <div className="ui-metric-tile"><span className="ui-metric-tile__label">Saved geometry</span><strong className="ui-metric-tile__value">{hasPersistedGeometry ? "Present" : "None yet"}</strong></div>
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-sm leading-6 text-slate-600">
+        <div className="ui-inline-note">
           Draft vertices: {vertices.length}. The API will reject polygons with fewer than 3 distinct vertices.
         </div>
         {marker ? (
-          <div className="rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-sm leading-6 text-slate-600">
+          <div className="ui-inline-note">
             Marker placed at {marker[1].toFixed(6)}, {marker[0].toFixed(6)}.
           </div>
         ) : null}
         {vertices.length > 0 ? (
-          <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white">
-            <table className="min-w-full border-collapse">
+          <div className="ui-table-container">
+            <div className="ui-table-container__desktop">
+            <table className="ui-table">
               <thead>
-                <tr className="bg-slate-50">
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">#</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Latitude</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Longitude</th>
+                <tr>
+                  <th>#</th>
+                  <th>Latitude</th>
+                  <th>Longitude</th>
                 </tr>
               </thead>
               <tbody>
                 {vertices.map((vertex, index) => (
-                  <tr key={`${vertex[0]}-${vertex[1]}-${index}`} className="border-t border-slate-200">
-                    <td className="px-4 py-3 text-sm leading-6 text-slate-700">{index + 1}</td>
-                    <td className="px-4 py-3 text-sm leading-6 text-slate-700">{vertex[1].toFixed(6)}</td>
-                    <td className="px-4 py-3 text-sm leading-6 text-slate-700">{vertex[0].toFixed(6)}</td>
+                  <tr key={`${vertex[0]}-${vertex[1]}-${index}`}>
+                    <td>{index + 1}</td>
+                    <td>{vertex[1].toFixed(6)}</td>
+                    <td>{vertex[0].toFixed(6)}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
         ) : null}
-      </section>
+      </Card>
 
-      <section className="space-y-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="space-y-1">
-          <strong className="block text-lg font-semibold text-slate-900">Boundary map</strong>
-          <span className="block text-sm leading-6 text-slate-500">Saved boundary, GNSS points, and the persisted marker are shown together.</span>
-        </div>
+      <Card className="space-y-4">
+        <SectionHeader title="Boundary map" subtitle="Saved boundary, GNSS points, and the persisted marker are shown together." />
         <MapView geojson={mapGeojson as never} height="480px" autoFit fitSignal={`${vertices.length}-${marker?.join(",") ?? "none"}`} onMapClick={handleMapClick} />
-      </section>
+      </Card>
     </div>
   );
 }

@@ -2,6 +2,12 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { FixedAiPanel } from "../components/ai/FixedAiPanel";
+import { AppIcon } from "../components/ui/AppIcon";
+import { getButtonClass, PrimaryButton } from "../components/ui/Button";
+import { Card } from "../components/ui/Card";
+import { SearchInput } from "../components/ui/Fields";
+import { PageHeader } from "../components/ui/PageHeader";
+import { SectionHeader } from "../components/ui/SectionHeader";
 import { useAiPanelState } from "../context/AiPanelContext";
 import { buildAiViewContext } from "../hooks/useAiContext";
 import { apiGet, type PaginatedResponse } from "../lib/api";
@@ -107,24 +113,26 @@ export function AiWorkspaceHubPage() {
   }
 
   return (
-    <div className="ai-studio-layout">
+    <div className="reference-page ai-workspace-page">
+      <PageHeader
+        title="AI Workspace"
+        subtitle="Work across commands, chat history, and job-specific guidance from one assistant workspace."
+      />
+      <div className="ai-studio-layout">
       <aside className="ai-studio-sidebar">
         <div className="ai-studio-sidebar__brand">
-          <div className="ai-studio-sidebar__mark">AI</div>
+          <div className="ai-studio-sidebar__mark">
+            <AppIcon name="ai" />
+          </div>
           <div className="stack" style={{ gap: "0.18rem" }}>
             <strong>Geo Assistant</strong>
             <span className="text-muted">Command workspace</span>
           </div>
         </div>
 
-        <button type="button" className="button-secondary ai-studio-sidebar__new" onClick={handleNewChat}>
-          New chat
-        </button>
+        <PrimaryButton type="button" className="ai-studio-sidebar__new" onClick={handleNewChat}>New chat</PrimaryButton>
 
-        <label className="ai-studio-sidebar__search">
-          <span className="text-muted">Search chats</span>
-          <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search recent chats" />
-        </label>
+        <SearchInput value={search} onChange={(event) => setSearch(event.target.value)} label="Search chats" placeholder="Search recent chats" />
 
         <div className="ai-studio-sidebar__section">
           <span className="ai-studio-sidebar__label">Recent</span>
@@ -158,20 +166,21 @@ export function AiWorkspaceHubPage() {
 
           <div className="ai-studio-main__actions">
             {activeJobId ? (
-              <Link className="button-secondary" to={`/jobs/${activeJobId}`}>
+              <Link className={getButtonClass("secondary")} to={`/jobs/${activeJobId}`}>
                 Open related job
               </Link>
             ) : null}
-            <button type="button" className="button-ghost" onClick={() => clearThread(activeKey)}>
+            <button type="button" className={getButtonClass("ghost")} onClick={() => clearThread(activeKey)}>
               Clear chat
             </button>
           </div>
         </div>
 
-        <div className="ai-studio-panel">
+        <Card className="ai-studio-panel">
           <FixedAiPanel contextOverride={context} />
-        </div>
+        </Card>
       </section>
+      </div>
     </div>
   );
 }

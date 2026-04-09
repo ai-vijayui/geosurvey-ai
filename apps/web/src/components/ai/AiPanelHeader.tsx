@@ -1,3 +1,5 @@
+import { AppIcon } from "../ui/AppIcon";
+
 type Props = {
   title: string;
   subtitle: string;
@@ -17,9 +19,7 @@ export function AiPanelHeader({ title, subtitle, onClear, onClose }: Props) {
       </div>
       <div className="row ai-panel-header-actions">
         <button type="button" className="icon-button icon-button-ghost" onClick={onClear} aria-label="Clear AI conversation" title="Clear">
-          <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-            <path d="M9 3h6l1 2h4v2H4V5h4l1-2Zm1 6h2v8h-2V9Zm4 0h2v8h-2V9ZM7 9h2v8H7V9Zm-1 11V8h12v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2Z" />
-          </svg>
+          <AppIcon name="review" />
         </button>
         {onClose ? (
           <button type="button" className="icon-button icon-button-ghost ai-panel-close" onClick={onClose} aria-label="Close AI panel" title="Close">

@@ -7,6 +7,7 @@ import App from "./App";
 import { NotificationProvider } from "./context/NotificationContext";
 import { queryClient } from "./lib/queryClient";
 import "maplibre-gl/dist/maplibre-gl.css";
+import "./marketing.css";
 import "./styles.css";
 
 const publishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;

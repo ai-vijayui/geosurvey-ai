@@ -7,6 +7,11 @@ import { ProjectCreateModal } from "../components/ProjectCreateModal";
 import { EmptyState } from "../components/feedback/EmptyState";
 import { ProgressTracker } from "../components/ProgressTracker";
 import { WorkflowStepper } from "../components/workflow/WorkflowStepper";
+import { getButtonClass, PrimaryButton } from "../components/ui/Button";
+import { Card } from "../components/ui/Card";
+import { PageHeader } from "../components/ui/PageHeader";
+import { SectionHeader } from "../components/ui/SectionHeader";
+import { StatCard } from "../components/ui/StatCard";
 import { apiGet, type PaginatedResponse } from "../lib/api";
 
 type DashboardStats = {
@@ -77,35 +82,33 @@ export function Dashboard() {
           navigate(`/jobs?projectId=${project.id}&createJob=1`);
         }}
       />
-      <div className="reference-page-header dashboard-page-header">
-        <div className="reference-page-header__copy dashboard-page-header__copy">
-          <h1>Dashboard</h1>
-          <p>Monitor the GeoSurvey pipeline with a calm operations view of live metrics, workflow readiness, mapped coverage, and recent AI findings.</p>
-        </div>
-        <div className="reference-actions">
-          <Link className="button-secondary" to="/help#start-here">
-            Show Me How
-          </Link>
-          <Link className="button-secondary" to="/help#how-this-app-works">
-            Explain This Page
-          </Link>
-          {projects.length === 0 ? (
-            <button className="button-primary dashboard-cta-link" onClick={() => setIsCreateProjectOpen(true)}>
-              New Project
-            </button>
-          ) : (
-            <Link className="button-primary dashboard-cta-link" to="/jobs?createJob=1">
-              New Job
+      <PageHeader
+        title="Dashboard"
+        subtitle="Monitor the GeoSurvey pipeline with a calm operations view of live metrics, workflow readiness, mapped coverage, and recent AI findings."
+        actions={(
+          <>
+            <Link className={getButtonClass("secondary")} to="/help#start-here">
+              Show Me How
             </Link>
-          )}
-        </div>
-      </div>
+            <Link className={getButtonClass("secondary")} to="/help#how-this-app-works">
+              Explain This Page
+            </Link>
+            {projects.length === 0 ? (
+              <PrimaryButton onClick={() => setIsCreateProjectOpen(true)}>New Project</PrimaryButton>
+            ) : (
+              <Link className={getButtonClass("primary")} to="/jobs?createJob=1">
+                New Job
+              </Link>
+            )}
+          </>
+        )}
+      />
 
       <div className="reference-panel-grid dashboard-panel-grid">
-        <div className="reference-card reference-card--accent space-y-4 dashboard-hero-card">
+        <Card variant="accent" className="space-y-4 dashboard-hero-card">
           <span className="reference-chip">Portfolio overview</span>
-          <strong className="dashboard-hero-card__title block text-2xl font-semibold leading-tight text-slate-900">{projects.length === 0 ? "Create your first project" : totalJobs === 0 ? "Create your first job" : jobs.length === 0 ? "Queue work for processing" : "Monitor active workflows"}</strong>
-          <span className="block max-w-2xl text-sm leading-6 text-slate-500">
+          <strong className="dashboard-hero-card__title block text-2xl font-semibold leading-tight text-[var(--text-primary)]">{projects.length === 0 ? "Create your first project" : totalJobs === 0 ? "Create your first job" : jobs.length === 0 ? "Queue work for processing" : "Monitor active workflows"}</strong>
+          <span className="block max-w-2xl text-sm leading-6 text-[var(--text-secondary)]">
             {projects.length === 0
               ? "Projects anchor the full GeoSurvey workflow. Start there so jobs, files, and reports all stay organized."
               : totalJobs === 0
@@ -116,23 +119,21 @@ export function Dashboard() {
           </span>
           <div className="dashboard-hero-card__actions flex flex-wrap items-center gap-3">
             {projects.length === 0 ? (
-              <button className="button-primary dashboard-cta-link" onClick={() => setIsCreateProjectOpen(true)}>
-                Create project
-              </button>
+              <PrimaryButton onClick={() => setIsCreateProjectOpen(true)}>Create project</PrimaryButton>
             ) : (
-              <Link className="button-primary dashboard-cta-link" to="/jobs">
+              <Link className={getButtonClass("primary")} to="/jobs">
                 {totalJobs === 0 ? "Create job" : "Open jobs"}
               </Link>
             )}
-            <Link className="table-action" to="/processing">
+            <Link className={getButtonClass("secondary")} to="/processing">
               Open processing
             </Link>
           </div>
-        </div>
-        <div className="reference-card reference-card--soft space-y-4 dashboard-workflow-card">
+        </Card>
+        <Card variant="soft" className="space-y-4 dashboard-workflow-card">
           <span className="reference-chip">Workflow</span>
           <WorkflowStepper steps={workflowSteps} compact />
-        </div>
+        </Card>
       </div>
 
       <div className="reference-metrics dashboard-metrics" data-tour="dashboard-kpis">
@@ -142,11 +143,7 @@ export function Dashboard() {
           ["Total Points", stats?.totalPoints?.toLocaleString?.() ?? 0, "Imported survey points in the workspace"],
           ["Avg RMSE", stats?.avgRmse ?? 0, "Quality baseline across processed jobs"]
         ].map(([label, value, trend], index) => (
-          <div key={label} className="reference-metric dashboard-metric" data-tour={index === 0 ? "dashboard-kpi-card" : undefined}>
-            <span className="reference-metric__label">{label}</span>
-            <strong className="reference-metric__value">{value}</strong>
-            <span className="reference-metric__meta">{trend}</span>
-          </div>
+          <StatCard key={label} label={String(label)} value={value} meta={trend} className="dashboard-metric" />
         ))}
       </div>
 
@@ -155,65 +152,61 @@ export function Dashboard() {
           eyebrow="Unavailable"
           title="Dashboard data is unavailable"
           description="The operations overview could not load. Retry to restore live metrics, queue visibility, and AI insights."
-          action={<div className="reference-actions"><button className="button-primary" onClick={() => { void statsQuery.refetch(); void processingJobsQuery.refetch(); void projectsQuery.refetch(); }}>Retry</button><Link className="button-secondary" to="/help#troubleshooting">Open Help</Link></div>}
+          action={<div className="reference-actions"><PrimaryButton onClick={() => { void statsQuery.refetch(); void processingJobsQuery.refetch(); void projectsQuery.refetch(); }}>Retry</PrimaryButton><Link className={getButtonClass("secondary")} to="/help#troubleshooting">Open Help</Link></div>}
         />
       ) : projects.length === 0 ? (
         <EmptyState
           title="Create your first project"
           description="Projects unlock the full workflow: jobs, uploads, processing, review, and export."
-          action={<div className="reference-actions"><button className="button-primary dashboard-cta-link" onClick={() => setIsCreateProjectOpen(true)}>Create Project</button><Link className="button-secondary" to="/help#getting-started">Open Help</Link></div>}
+          icon="projects"
+          action={<div className="reference-actions"><PrimaryButton onClick={() => setIsCreateProjectOpen(true)}>Create Project</PrimaryButton><Link className={getButtonClass("secondary")} to="/help#getting-started">Open Help</Link></div>}
         />
       ) : totalJobs === 0 ? (
         <EmptyState
           title="Create your first survey job"
           description="Your project is ready. Create a job next so you can upload files, process outputs, and review AI findings."
-          action={<div className="reference-actions"><Link className="button-primary dashboard-cta-link" data-tour="create-job-btn" to="/jobs?createJob=1">Create Job</Link><Link className="button-secondary" to="/help#workflow-guide">Open Help</Link></div>}
+          icon="jobs"
+          action={<div className="reference-actions"><Link className={getButtonClass("primary")} data-tour="create-job-btn" to="/jobs?createJob=1">Create Job</Link><Link className={getButtonClass("secondary")} to="/help#workflow-guide">Open Help</Link></div>}
         />
       ) : null}
 
-      <div className="reference-card space-y-4 dashboard-map-card">
-        <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-          <strong className="text-lg font-semibold text-slate-900">Project coverage map</strong>
-          <span className="text-sm text-slate-500">Saved job boundaries and map context from the active project portfolio.</span>
-        </div>
+      <Card className="space-y-4 dashboard-map-card">
+        <SectionHeader
+          title="Project coverage map"
+          subtitle="Saved job boundaries and map context from the active project portfolio."
+        />
         {boundariesGeojson ? <MapView geojson={boundariesGeojson as never} height="360px" autoFit fitSignal={stats?.jobBoundaries.length ?? 0} /> : (
-          <EmptyState compact title="No saved boundaries yet" description="Saved survey polygons will appear here once jobs store boundary geometry." />
+          <EmptyState compact icon="map" title="No saved boundaries yet" description="Saved survey polygons will appear here once jobs store boundary geometry." />
         )}
-      </div>
+      </Card>
 
       <div className="grid gap-4 xl:grid-cols-2">
-        <div className="reference-card space-y-4 dashboard-section-card">
-          <div className="flex items-center justify-between gap-3">
-            <strong className="text-lg font-semibold text-slate-900">Processing queue</strong>
-            <Link className="button-ghost" to="/jobs">View all</Link>
-          </div>
+        <Card className="space-y-4 dashboard-section-card">
+          <SectionHeader title="Processing queue" action={<Link className={getButtonClass("ghost")} to="/jobs">View all</Link>} />
           {jobs.length === 0 ? (
-            <EmptyState compact title="No active processing jobs" description="Queue a job from the workflow pages to watch live progress here." />
+            <EmptyState compact icon="processing" title="No active processing jobs" description="Queue a job from the workflow pages to watch live progress here." />
           ) : (
             jobs.map((job) => (
-              <section key={job.id} className="dashboard-queue-item space-y-4 rounded-2xl border border-[#eee5dd] bg-[#faf7f3] p-4">
+              <section key={job.id} className="dashboard-queue-item space-y-4 rounded-[16px] border border-[var(--border-subtle)] bg-[rgba(251,248,247,0.92)] p-4">
                 <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                   <div className="space-y-1">
-                    <strong className="block text-base font-semibold text-slate-900">{job.name}</strong>
-                    <span className="text-sm leading-6 text-slate-500">Live worker events and stage progress for this active survey job.</span>
+                    <strong className="block text-base font-semibold text-[var(--text-primary)]">{job.name}</strong>
+                    <span className="text-sm leading-6 text-[var(--text-secondary)]">Live worker events and stage progress for this active survey job.</span>
                   </div>
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="type-badge">{job.type.replaceAll("_", " ")}</span>
-                    <Link className="table-action" to={`/jobs/${job.id}`}>Open job</Link>
+                    <Link className={getButtonClass("secondary")} to={`/jobs/${job.id}`}>Open job</Link>
                   </div>
                 </div>
                 <ProgressTracker jobId={job.id} onComplete={() => undefined} />
               </section>
             ))
           )}
-        </div>
-        <div className="reference-card space-y-4 dashboard-section-card">
-          <div className="flex flex-col gap-1">
-            <strong className="text-lg font-semibold text-slate-900">AI Insights feed</strong>
-            <span className="text-sm text-slate-500">Recent model-generated QA findings across the portfolio.</span>
-          </div>
+        </Card>
+        <Card className="space-y-4 dashboard-section-card">
+          <SectionHeader title="AI Insights feed" subtitle="Recent model-generated QA findings across the portfolio." />
           {(stats?.recentInsights ?? []).length === 0 ? (
-            <EmptyState compact title="No insights yet" description="Run AI analysis on jobs to populate the feed." />
+            <EmptyState compact icon="ai" title="No insights yet" description="Run AI analysis on jobs to populate the feed." />
           ) : (
             (stats?.recentInsights ?? []).map((insight) => (
               <AiInsightCard
@@ -227,7 +220,7 @@ export function Dashboard() {
               />
             ))
           )}
-        </div>
+        </Card>
       </div>
     </div>
   );

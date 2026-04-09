@@ -3,6 +3,9 @@ import type { InputFile } from "@geosurvey-ai/shared";
 import { Link } from "react-router-dom";
 import { UploadHelpPanel } from "./help/UploadHelpPanel";
 import { useNotifications } from "../context/NotificationContext";
+import { AppIcon } from "./ui/AppIcon";
+import { GhostButton, PrimaryButton, SecondaryButton, getButtonClass } from "./ui/Button";
+import { StatusBadge } from "./ui/StatusBadge";
 import { apiPost, apiUpload } from "../lib/api";
 
 type Props = {
@@ -30,18 +33,18 @@ function formatFileSize(sizeBytes: number) {
 
 function queueStatusClasses(status: UploadQueueItem["status"]) {
   if (status === "uploaded") {
-    return "inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-emerald-700";
+    return "success";
   }
 
   if (status === "uploading") {
-    return "inline-flex items-center rounded-full border border-sky-200 bg-sky-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-sky-700";
+    return "info";
   }
 
   if (status === "error") {
-    return "inline-flex items-center rounded-full border border-rose-200 bg-rose-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-rose-700";
+    return "error";
   }
 
-  return "inline-flex items-center rounded-full border border-slate-200 bg-slate-100 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-600";
+  return "default";
 }
 
 export function FileUploadZone({ jobId, onUploadComplete, showStartProcessingButton = true }: Props) {
@@ -124,66 +127,61 @@ export function FileUploadZone({ jobId, onUploadComplete, showStartProcessingBut
 
       <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
         <div className="space-y-1">
-          <strong className="block text-lg font-semibold text-slate-900">Upload input files</strong>
-          <span className="block text-sm leading-6 text-slate-500">Add files first, then continue directly into processing and Smart Check review.</span>
+          <strong className="block text-lg font-semibold text-[var(--text-primary)]">Upload input files</strong>
+          <span className="block text-sm leading-6 text-[var(--text-secondary)]">Add files first, then continue directly into processing and Smart Check review.</span>
         </div>
-        <label className="table-action cursor-pointer">
+        <label className={`${getButtonClass("secondary")} cursor-pointer`}>
           Browse files
           <input hidden multiple type="file" onChange={(event) => void queueFiles(event.target.files)} />
         </label>
       </div>
       <label
-        className="flex min-h-[12rem] cursor-pointer flex-col items-center justify-center rounded-3xl border border-dashed border-slate-300 bg-slate-50/70 px-6 py-8 text-center transition hover:border-slate-400 hover:bg-slate-100/70"
+        className="ui-upload-dropzone"
         onDragOver={(event) => event.preventDefault()}
         onDrop={(event) => {
           event.preventDefault();
           void queueFiles(event.dataTransfer.files);
         }}
       >
-        <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-900 text-sm font-semibold tracking-[0.18em] text-white">
-          UP
+        <div className="ui-upload-dropzone__icon">
+          <AppIcon name="upload" className="h-6 w-6" />
         </div>
-        <strong className="text-base font-semibold text-slate-900">Drag and drop files here</strong>
-        <span className="mt-2 max-w-[28rem] text-sm leading-6 text-slate-500">CSV for point lists, JPG for photos, TIFF for map images, LAS or LAZ for 3D scan files, DXF or SHP for land drawings, PDF for notes.</span>
+        <strong className="text-base font-semibold text-[var(--text-primary)]">Drag and drop files here</strong>
+        <span className="mt-2 max-w-[28rem] text-sm leading-6 text-[var(--text-secondary)]">CSV for point lists, JPG for photos, TIFF for map images, LAS or LAZ for 3D scan files, DXF or SHP for land drawings, PDF for notes.</span>
       </label>
       {feedback ? (
-        <div className="rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-sm leading-6 text-slate-600">{feedback}</div>
+        <div className="ui-inline-note">{feedback}</div>
       ) : (
-        <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm leading-6 text-slate-500">
+        <div className="ui-inline-note bg-[rgba(255,255,255,0.92)]">
           No file yet? Download a sample and test this page. <Link className="auth-shell__footer-link" to="/help#sample-files">Open sample files help</Link>
         </div>
       )}
       {queue.length > 0 ? (
         <div className="space-y-3">
           {queue.map((item) => (
-            <div key={item.id} className="space-y-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <div key={item.id} className="space-y-4 rounded-[16px] border border-[var(--border-subtle)] bg-[rgba(255,255,255,0.94)] p-4">
               <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                 <div className="space-y-1">
-                  <strong className="block text-sm font-semibold text-slate-900">{item.file.name}</strong>
-                  <span className="block text-sm leading-6 text-slate-500">{formatFileSize(item.file.size)}</span>
+                  <strong className="block text-sm font-semibold text-[var(--text-primary)]">{item.file.name}</strong>
+                  <span className="block text-sm leading-6 text-[var(--text-secondary)]">{formatFileSize(item.file.size)}</span>
                 </div>
-                <span className={queueStatusClasses(item.status)}>{item.message}</span>
+                <StatusBadge label={item.message} tone={queueStatusClasses(item.status) as "default" | "success" | "info" | "error"} />
               </div>
-              <div className="h-2 overflow-hidden rounded-full bg-slate-100">
-                <span className="block h-full rounded-full bg-emerald-600 transition-[width] duration-300" style={{ width: `${item.progress}%` }} />
+              <div className="h-2 overflow-hidden rounded-full bg-[var(--bg-muted)]">
+                <span className="block h-full rounded-full bg-[var(--accent)] transition-[width] duration-300" style={{ width: `${item.progress}%` }} />
               </div>
               <div className="flex flex-wrap justify-end gap-2">
                 {item.status === "error" && acceptedExts.some((ext) => item.file.name.toLowerCase().endsWith(ext)) ? (
-                  <button type="button" onClick={() => void runUpload(item)}>
-                    Retry
-                  </button>
+                  <SecondaryButton type="button" onClick={() => void runUpload(item)}>Retry</SecondaryButton>
                 ) : null}
-                <button type="button" onClick={() => setQueue((current) => current.filter((entry) => entry.id !== item.id))}>
-                  Remove
-                </button>
+                <GhostButton type="button" onClick={() => setQueue((current) => current.filter((entry) => entry.id !== item.id))}>Remove</GhostButton>
               </div>
             </div>
           ))}
         </div>
       ) : null}
       {showStartProcessingButton ? (
-        <button
-          className="button-primary"
+        <PrimaryButton
           disabled={processing || !canStartProcessing}
           onClick={async () => {
             setProcessing(true);
@@ -213,7 +211,7 @@ export function FileUploadZone({ jobId, onUploadComplete, showStartProcessingBut
           }}
         >
           {processing ? "Starting..." : canStartProcessing ? "Next: Start Processing" : "Upload valid files to continue"}
-        </button>
+        </PrimaryButton>
       ) : null}
     </div>
   );

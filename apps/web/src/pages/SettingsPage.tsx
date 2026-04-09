@@ -1,5 +1,11 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { Card } from "../components/ui/Card";
+import { PageHeader } from "../components/ui/PageHeader";
+import { SectionHeader } from "../components/ui/SectionHeader";
+import { SelectField } from "../components/ui/Fields";
+import { StatCard } from "../components/ui/StatCard";
+import { StatusBadge } from "../components/ui/StatusBadge";
 import { apiGet, type PaginatedResponse } from "../lib/api";
 
 type SettingsState = {
@@ -74,14 +80,8 @@ type SettingSectionProps = {
   children: ReactNode;
 };
 
-function statusTone(isHealthy: boolean) {
-  return isHealthy
-    ? "inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-emerald-700"
-    : "inline-flex items-center rounded-full border border-rose-200 bg-rose-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-rose-700";
-}
-
 function sectionCardClasses() {
-  return "space-y-5 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm";
+  return "space-y-5";
 }
 
 function labelClasses() {
@@ -89,35 +89,32 @@ function labelClasses() {
 }
 
 function inputClasses() {
-  return "mt-2 min-h-[46px] w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-slate-300 focus:bg-white focus:ring-2 focus:ring-emerald-500/20";
+  return "ui-input mt-2";
 }
 
 function noteClasses() {
-  return "rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-sm leading-6 text-slate-600";
+  return "ui-inline-note";
 }
 
 function checkboxClasses(enabled: boolean) {
   return `group flex items-start gap-3 rounded-2xl border px-4 py-3 transition ${
-    enabled ? "border-emerald-200 bg-emerald-50/70" : "border-slate-200 bg-slate-50/70 hover:border-slate-300"
+    enabled ? "border-[var(--accent-200)] bg-[var(--accent-soft)]" : "border-[var(--border-subtle)] bg-[rgba(251,248,247,0.82)] hover:border-[var(--border-strong)]"
   }`;
 }
 
 function statCardTone(emphasis?: "default" | "soft") {
   return emphasis === "soft"
-    ? "rounded-2xl border border-slate-200 bg-slate-50/70 p-4"
-    : "rounded-2xl border border-slate-200 bg-white p-5 shadow-sm";
+    ? "rounded-2xl border border-[var(--border-subtle)] bg-[rgba(251,248,247,0.9)] p-4"
+    : "rounded-2xl border border-[var(--border-subtle)] bg-[rgba(255,255,255,0.94)] p-5 shadow-sm";
 }
 
 function SettingSection({ title, description, note, children }: SettingSectionProps) {
   return (
-    <section className={sectionCardClasses()}>
-      <div className="space-y-1">
-        <strong className="block text-lg font-semibold text-slate-900">{title}</strong>
-        <span className="block text-sm leading-6 text-slate-500">{description}</span>
-      </div>
+    <Card className={sectionCardClasses()}>
+      <SectionHeader title={title} subtitle={description} />
       <div className="grid gap-4">{children}</div>
       {note ? <div className={noteClasses()}>{note}</div> : null}
-    </section>
+    </Card>
   );
 }
 
@@ -208,47 +205,25 @@ export function SettingsPage() {
 
   return (
     <div className="reference-page">
-      <div className="reference-page-header">
-        <div className="reference-page-header__copy">
-          <h1>Settings</h1>
-          <p>
-            Manage local workspace defaults for maps, AI review, storage behavior, processing, and environment visibility.
-          </p>
-        </div>
-        <span className="inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-slate-600 shadow-sm">
-          {saveState}
-        </span>
-      </div>
+      <PageHeader
+        title="Settings"
+        subtitle="Manage local workspace defaults for maps, AI review, storage behavior, processing, and environment visibility."
+        actions={<StatusBadge label={saveState} tone="info" />}
+      />
 
       <div className="reference-panel-grid">
-        <div className="reference-card reference-card--accent space-y-4">
+        <Card variant="accent" className="space-y-4">
           <span className="reference-chip">Workspace controls</span>
-          <strong className="block text-2xl font-semibold leading-tight text-slate-900">Shape how this workstation handles maps, AI review, storage, and processing defaults.</strong>
-          <span className="block max-w-2xl text-sm leading-6 text-slate-500">
+          <strong className="block text-2xl font-semibold leading-tight text-[var(--text-primary)]">Shape how this workstation handles maps, AI review, storage, and processing defaults.</strong>
+          <span className="block max-w-2xl text-sm leading-6 text-[var(--text-secondary)]">
             These preferences are saved locally in the browser, so the app can feel tailored without waiting on a backend settings model.
           </span>
-        </div>
-        <div className="reference-metrics">
-          <div className="reference-metric">
-            <span className="reference-metric__label">Projects</span>
-            <strong className="reference-metric__value">{projectsQuery.data?.length ?? 0}</strong>
-            <span className="reference-metric__meta">Projects detected from the current API session</span>
-          </div>
-          <div className="reference-metric">
-            <span className="reference-metric__label">Recent jobs loaded</span>
-            <strong className="reference-metric__value">{jobsQuery.data?.data.length ?? 0}</strong>
-            <span className="reference-metric__meta">Latest jobs used for environment visibility</span>
-          </div>
-          <div className="reference-metric">
-            <span className="reference-metric__label">Active jobs</span>
-            <strong className="reference-metric__value">{dashboardQuery.data?.activeJobs ?? 0}</strong>
-            <span className="reference-metric__meta">Live work currently moving through the pipeline</span>
-          </div>
-          <div className="reference-metric">
-            <span className="reference-metric__label">Storage used</span>
-            <strong className="reference-metric__value">{storageEstimate?.usage ? `${(storageEstimate.usage / (1024 * 1024)).toFixed(1)} MB` : "N/A"}</strong>
-            <span className="reference-metric__meta">Browser-side workspace storage utilization</span>
-          </div>
+        </Card>
+        <div className="jobs-kpi-grid">
+          <StatCard label="Projects" value={projectsQuery.data?.length ?? 0} meta="Projects detected from the current API session" />
+          <StatCard label="Recent jobs loaded" value={jobsQuery.data?.data.length ?? 0} meta="Latest jobs used for environment visibility" />
+          <StatCard label="Active jobs" value={dashboardQuery.data?.activeJobs ?? 0} meta="Live work currently moving through the pipeline" />
+          <StatCard label="Storage used" value={storageEstimate?.usage ? `${(storageEstimate.usage / (1024 * 1024)).toFixed(1)} MB` : "N/A"} meta="Browser-side workspace storage utilization" />
         </div>
       </div>
 
@@ -445,7 +420,7 @@ export function SettingsPage() {
           {environmentStatus.map((item) => (
             <div key={item.label} className={statCardTone("soft")}>
               <span className="block text-xs font-medium uppercase tracking-[0.14em] text-slate-500">{item.label}</span>
-              <span className={`mt-3 ${statusTone(item.healthy)}`}>{item.value}</span>
+              <span className="mt-3 block"><StatusBadge label={item.value} tone={item.healthy ? "success" : "error"} /></span>
             </div>
           ))}
         </div>

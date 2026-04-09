@@ -15,14 +15,14 @@ type Props = {
 export function ConfirmationCardBlock({ title, message, summary, confirmLabel = "Confirm", cancelLabel = "Cancel", editLabel = "Edit", showEdit, disabled, onConfirm, onEdit, onCancel }: Props) {
   return (
     <div className="ai-panel-card ai-panel-card-warning">
-      <strong className="block text-slate-900">{title ?? "Confirmation required"}</strong>
-      <span className="mt-2 block leading-6 text-slate-600">{message}</span>
+      <strong className="block text-[var(--text-primary)]">{title ?? "Confirmation required"}</strong>
+      <span className="mt-2 block leading-6 text-[var(--text-secondary)]">{message}</span>
       {summary?.length ? (
         <div className="ai-panel-summary">
           {summary.map((item) => (
             <div key={item.label} className="flex items-start justify-between gap-3">
-              <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">{item.label}</span>
-              <span className="text-right text-sm text-slate-700">{item.value}</span>
+              <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--text-muted)]">{item.label}</span>
+              <span className="text-right text-sm text-[var(--text-secondary)]">{item.value}</span>
             </div>
           ))}
         </div>
