@@ -14,6 +14,8 @@ const ContactPage = lazy(async () => ({ default: (await import("./marketing/page
 const BlogPage = lazy(async () => ({ default: (await import("./marketing/pages/BlogPage")).BlogPage }));
 const BlogCategoryPage = lazy(async () => ({ default: (await import("./marketing/pages/BlogCategoryPage")).BlogCategoryPage }));
 const BlogDetailPage = lazy(async () => ({ default: (await import("./marketing/pages/BlogDetailPage")).BlogDetailPage }));
+const ResourcesPage = lazy(async () => ({ default: (await import("./marketing/pages/ResourcesPage")).ResourcesPage }));
+const ResourceDetailPage = lazy(async () => ({ default: (await import("./marketing/pages/ResourceDetailPage")).ResourceDetailPage }));
 const DocsPage = lazy(async () => ({ default: (await import("./marketing/pages/DocsPage")).DocsPage }));
 const AICommandCenterPage = lazy(async () => ({ default: (await import("./marketing/pages/AICommandCenterPage")).AICommandCenterPage }));
 const DemoPage = lazy(async () => ({ default: (await import("./marketing/pages/DemoPage")).DemoPage }));
@@ -39,7 +41,7 @@ function RouteFallback() {
 
 const clerkAppearance = {
   variables: {
-    colorPrimary: "#f45b55",
+    colorPrimary: "#945765",
     colorText: "#1c1c1c",
     colorTextSecondary: "#6f675f",
     colorBackground: "#ffffff",
@@ -234,7 +236,8 @@ export default function App() {
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/blog/category/:slug" element={<BlogCategoryPage />} />
         <Route path="/blog/:slug" element={<BlogDetailPage />} />
-        <Route path="/resources" element={<BlogPage />} />
+        <Route path="/resources" element={<ResourcesPage />} />
+        <Route path="/resources/:slug" element={<ResourceDetailPage />} />
         <Route path="/docs" element={<DocsPage />} />
           <Route
             path="/privacy"

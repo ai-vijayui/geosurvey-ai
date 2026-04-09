@@ -7,6 +7,7 @@ import { gnssRouter } from "./gnss.js";
 import { jobsRouter } from "./jobs.js";
 import { projectsRouter } from "./projects.js";
 import { getNvidiaKeyPreview, hasNvidiaApiKey } from "../services/aiOrchestrator.js";
+import { marketingRouter } from "./marketing.js";
 
 export const router = Router();
 
@@ -16,6 +17,8 @@ router.get("/debug/env", (_req, res) => {
     keyPreview: getNvidiaKeyPreview()
   });
 });
+
+router.use("/marketing", marketingRouter);
 
 router.use(requireAuth, withOrg);
 

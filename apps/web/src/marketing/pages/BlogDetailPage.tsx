@@ -5,6 +5,7 @@ import { AICommandBlock } from "../components/AICommandBlock";
 import { CTASection } from "../components/CTASection";
 import { Seo } from "../components/Seo";
 import { SectionContainer } from "../components/SectionContainer";
+import { VisualCluster } from "../components/VisualCluster";
 import { blogArticles, featurePages } from "../siteContent";
 
 export function BlogDetailPage() {
@@ -40,24 +41,20 @@ export function BlogDetailPage() {
           </>
         }
       >
-        <div className="marketing-article">
-          {article.body.map((paragraph) => (
-            <p key={paragraph}>{paragraph}</p>
-          ))}
+        <div className="marketing-two-column marketing-two-column--visual">
+          <div className="marketing-article">
+            {article.body.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+          </div>
+          <VisualCluster variant="resources" />
         </div>
       </SectionContainer>
 
       <SectionContainer eyebrow="Inline CTA" title="See the AI workflow behind the article." description="Blog content should always bridge into product understanding and action.">
-        <div className="marketing-two-column">
+        <div className="marketing-two-column marketing-two-column--visual">
           <AICommandBlock example={article.command} title="AI command example" />
-          <Card className="marketing-panel-card">
-            <span className="marketing-panel-card__label">Try the product path</span>
-            <div className="marketing-inline-links">
-              <Link to="/ai-command-center">Open AI Command Center</Link>
-              {relatedFeature ? <Link to={`/features/${relatedFeature.slug}`}>Explore related feature</Link> : null}
-              <Link to="/sign-up">Start Free</Link>
-            </div>
-          </Card>
+          <VisualCluster variant="platform" />
         </div>
       </SectionContainer>
 

@@ -10,9 +10,7 @@ const links = [
   { to: "/features", label: "Features" },
   { to: "/solutions", label: "Solutions" },
   { to: "/pricing", label: "Pricing" },
-  { to: "/resources", label: "Resources" },
-  { to: "/blog", label: "Blog" },
-  { to: "/about", label: "About" }
+  { to: "/blog", label: "Blog" }
 ];
 
 export function Navbar() {

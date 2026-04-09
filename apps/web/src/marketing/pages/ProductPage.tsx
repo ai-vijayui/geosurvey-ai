@@ -5,6 +5,7 @@ import { CTASection } from "../components/CTASection";
 import { FaqSection } from "../components/FaqSection";
 import { SectionContainer } from "../components/SectionContainer";
 import { Seo } from "../components/Seo";
+import { VisualCluster } from "../components/VisualCluster";
 import { faqItems, featureComparisonRows, platformModules, supportedDataTypes, whyChooseUs } from "../data";
 
 export function ProductPage() {
@@ -43,7 +44,7 @@ export function ProductPage() {
           </>
         }
       >
-        <div className="marketing-two-column">
+        <div className="marketing-problem-solution marketing-problem-solution--enhanced">
           <Card className="marketing-panel-card">
             <span className="marketing-panel-card__label">Platform coverage</span>
             <h3>From intake to delivery in one operational system.</h3>
@@ -59,6 +60,7 @@ export function ProductPage() {
               ))}
             </div>
           </Card>
+          <VisualCluster variant="platform" />
         </div>
       </SectionContainer>
 
@@ -76,6 +78,14 @@ export function ProductPage() {
             </Card>
           ))}
         </div>
+      </SectionContainer>
+
+      <SectionContainer
+        eyebrow="Platform model"
+        title="Show the product as a system, not just a list of modules."
+        description="This visual comparison makes the workflow shift obvious before the buyer reads the full detail."
+      >
+        <VisualCluster variant="compare" />
       </SectionContainer>
 
       <SectionContainer
@@ -97,19 +107,22 @@ export function ProductPage() {
         title="What changes when the workflow is operationally connected."
         description="A comparison table helps buyers quantify the difference between GeoSurvey AI and fragmented survey delivery."
       >
-        <div className="marketing-comparison-table">
-          <div className="marketing-comparison-table__header">
-            <span>Capability</span>
-            <span>GeoSurvey AI</span>
-            <span>Fragmented workflow</span>
-          </div>
-          {featureComparisonRows.map((row) => (
-            <div key={row.capability} className="marketing-comparison-table__row">
-              <strong>{row.capability}</strong>
-              <span>{row.geoSurvey}</span>
-              <span>{row.fragmented}</span>
+        <div className="marketing-two-column marketing-two-column--visual">
+          <div className="marketing-comparison-table">
+            <div className="marketing-comparison-table__header">
+              <span>Capability</span>
+              <span>GeoSurvey AI</span>
+              <span>Fragmented workflow</span>
             </div>
-          ))}
+            {featureComparisonRows.map((row) => (
+              <div key={row.capability} className="marketing-comparison-table__row">
+                <strong>{row.capability}</strong>
+                <span>{row.geoSurvey}</span>
+                <span>{row.fragmented}</span>
+              </div>
+            ))}
+          </div>
+          <VisualCluster variant="platform" />
         </div>
       </SectionContainer>
 

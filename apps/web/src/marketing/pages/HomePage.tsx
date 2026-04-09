@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+﻿import { Link } from "react-router-dom";
 import { motion } from "motion/react";
 import { Card } from "../../components/ui/Card";
 import { getButtonClass } from "../../components/ui/Button";
@@ -57,7 +57,7 @@ export function HomePage() {
             <ul className="marketing-list marketing-list--spacious">
               <li>Visitors instantly understand the AI-first value proposition.</li>
               <li>Operators see less manual setup work.</li>
-              <li>Buyers see workflow automation instead of just “AI” messaging.</li>
+              <li>Buyers see workflow automation instead of just "AI" messaging.</li>
             </ul>
             <div className="marketing-inline-links">
               <Link to="/ai-command-center">Open AI Command Center</Link>
@@ -100,28 +100,21 @@ export function HomePage() {
       </SectionContainer>
 
       <SectionContainer eyebrow="Product preview" title="A premium workspace for survey teams, not another pile of tools." description="Every interaction is designed to reduce cognitive load, increase confidence, and keep buyers focused on outcomes.">
-        <StaggerGroup className="marketing-preview-panels">
-          <Card className="marketing-preview-panel">
-            <span className="marketing-preview-panel__label">Dashboard</span>
-            <strong>Portfolio visibility across active jobs</strong>
-            <p>See queued work, processing state, upcoming reports, and AI findings without chasing updates.</p>
-          </Card>
-          <Card className="marketing-preview-panel">
-            <span className="marketing-preview-panel__label">Job processing</span>
-            <strong>From upload to review in one flow</strong>
-            <p>Validate source files, monitor AI processing, and keep operators aligned on the next action.</p>
-          </Card>
-          <Card className="marketing-preview-panel">
-            <span className="marketing-preview-panel__label">Map view</span>
-            <strong>Boundary context where decisions happen</strong>
-            <p>Review spatial outputs, compare extents, and inspect problem areas without leaving the job workspace.</p>
-          </Card>
-          <Card className="marketing-preview-panel">
-            <span className="marketing-preview-panel__label">AI insights</span>
-            <strong>Recommendations that shorten QA cycles</strong>
-            <p>Surface anomalies, overlaps, and processing risks before they turn into downstream delivery issues.</p>
-          </Card>
-        </StaggerGroup>
+        <div className="marketing-two-column marketing-two-column--visual">
+          <VisualCluster variant="platform" />
+          <StaggerGroup className="marketing-signal-stack">
+            <Card className="marketing-preview-panel">
+              <span className="marketing-preview-panel__label">AI command</span>
+              <strong>One input moves the whole workflow</strong>
+              <p>Create projects, assign context, launch processing, and prepare outputs without manual setup loops.</p>
+            </Card>
+            <Card className="marketing-preview-panel">
+              <span className="marketing-preview-panel__label">Operational view</span>
+              <strong>Managers and operators stay aligned</strong>
+              <p>Jobs, QA status, map review, and reporting live in one workspace instead of scattered tools.</p>
+            </Card>
+          </StaggerGroup>
+        </div>
       </SectionContainer>
 
       <SectionContainer eyebrow="Core features" title="Everything buyers need to understand the platform in one scan." description="Shorter copy, clearer grouping, and stronger visual rhythm keep the page easy to navigate while still covering the product breadth.">
@@ -211,6 +204,36 @@ export function HomePage() {
         </div>
       </SectionContainer>
 
+      <SectionContainer eyebrow="Built visually" title="Users should be able to understand the product in a quick scan." description="This section compresses the product story into UI-style blocks instead of making the visitor read every detail first.">
+        <div className="marketing-three-grid">
+          <Card className="marketing-panel-card marketing-mini-visual-card">
+            <span className="marketing-panel-card__label">Command in</span>
+            <strong>Create a land survey workflow for Block 12</strong>
+            <div className="marketing-mini-visual-card__track">
+              <span />
+            </div>
+          </Card>
+          <Card className="marketing-panel-card marketing-mini-visual-card">
+            <span className="marketing-panel-card__label">AI orchestration</span>
+            <strong>Project, job, processing, and review staged</strong>
+            <div className="marketing-mini-visual-card__bars">
+              <span />
+              <span />
+              <span />
+            </div>
+          </Card>
+          <Card className="marketing-panel-card marketing-mini-visual-card">
+            <span className="marketing-panel-card__label">Result out</span>
+            <strong>Map context, issues, and outputs ready</strong>
+            <div className="marketing-mini-visual-card__pill-row">
+              <span>Map</span>
+              <span>QA</span>
+              <span>Report</span>
+            </div>
+          </Card>
+        </div>
+      </SectionContainer>
+
       <SectionContainer eyebrow="Customer proof" title="Teams adopt GeoSurvey AI because it makes complex work easier to trust." description="Social proof is placed after the workflow sections so buyers have context before reading the outcomes.">
         <StaggerGroup className="marketing-testimonial-grid">
           {testimonials.map((testimonial) => (
@@ -237,3 +260,4 @@ export function HomePage() {
     </>
   );
 }
+

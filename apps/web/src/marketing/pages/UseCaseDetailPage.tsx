@@ -4,6 +4,7 @@ import { getButtonClass } from "../../components/ui/Button";
 import { CTASection } from "../components/CTASection";
 import { Seo } from "../components/Seo";
 import { SectionContainer } from "../components/SectionContainer";
+import { VisualCluster } from "../components/VisualCluster";
 import { featurePages, useCasePages } from "../siteContent";
 
 export function UseCaseDetailPage() {
@@ -52,7 +53,7 @@ export function UseCaseDetailPage() {
       </SectionContainer>
 
       <SectionContainer eyebrow="Workflow comparison" title="Traditional workflow vs AI-first workflow" description="This comparison is one of the clearest CRO moments on use-case pages.">
-        <div className="marketing-two-column">
+        <div className="marketing-problem-solution marketing-problem-solution--enhanced">
           <Card className="marketing-panel-card">
             <span className="marketing-panel-card__label">Traditional workflow</span>
             <ul className="marketing-list">
@@ -69,6 +70,7 @@ export function UseCaseDetailPage() {
               ))}
             </ul>
           </Card>
+          <VisualCluster variant="compare" />
         </div>
       </SectionContainer>
 

@@ -40,6 +40,23 @@ export type BlogArticle = {
   body: string[];
 };
 
+export type ResourcePage = {
+  slug: string;
+  title: string;
+  eyebrow: string;
+  summary: string;
+  description: string;
+  items: {
+    title: string;
+    description: string;
+    ctaLabel: string;
+    ctaHref: string;
+  }[];
+  relatedFeatureSlug?: string;
+  relatedUseCaseSlug?: string;
+  command?: CommandExample;
+};
+
 export const commandExamples: CommandExample[] = [
   {
     prompt: "Create a survey project for 5 hectares",
@@ -286,6 +303,129 @@ export const blogArticles: BlogArticle[] = [
       "Report generation is one of the clearest examples of AI reducing repetitive work. The operator knows what output is needed, and the platform can assemble the right reporting path automatically.",
       "The key is that reporting remains connected to the job workflow. That means teams do not lose context or rebuild the deliverable process manually at the end.",
       "An AI command for reporting should reference the project, output type, and review state so the system can generate the right package with minimal manual effort."
+    ]
+  }
+];
+
+export const resourcePages: ResourcePage[] = [
+  {
+    slug: "guides",
+    eyebrow: "Guides",
+    title: "Practical guides for AI-first survey operations",
+    summary: "Implementation-ready guides that help teams understand how to move from manual setup to AI-directed workflows.",
+    description: "These guides explain how GeoSurvey AI fits into real intake, processing, review, and reporting workflows so evaluation turns into action faster.",
+    command: commandExamples[0],
+    relatedFeatureSlug: "ai-command-center",
+    relatedUseCaseSlug: "land-surveyors",
+    items: [
+      {
+        title: "Guide: Launch a new survey project with one instruction",
+        description: "Show teams how AI creates the project, job context, and workflow setup automatically.",
+        ctaLabel: "See AI Command Center",
+        ctaHref: "/ai-command-center"
+      },
+      {
+        title: "Guide: Move from upload to reviewed output faster",
+        description: "Map the handoff from file intake to processing, QA, and reporting with less manual coordination.",
+        ctaLabel: "Explore Features",
+        ctaHref: "/features"
+      },
+      {
+        title: "Guide: Standardize survey delivery across teams",
+        description: "Help operations leaders create more consistent workflows across projects and deliverables.",
+        ctaLabel: "View Pricing",
+        ctaHref: "/pricing"
+      }
+    ]
+  },
+  {
+    slug: "case-studies",
+    eyebrow: "Case Studies",
+    title: "Operational outcomes teams can recognize quickly",
+    summary: "Illustrative stories that show where AI-first surveying improves delivery speed, clarity, and review consistency.",
+    description: "These stories are designed to help prospects map GeoSurvey AI to their own workflow pressure points and evaluation criteria.",
+    command: commandExamples[1],
+    relatedFeatureSlug: "automated-survey-processing",
+    relatedUseCaseSlug: "construction-companies",
+    items: [
+      {
+        title: "Survey firm: cut setup time across concurrent jobs",
+        description: "Show how AI-driven project creation removed repeated setup work from the office workflow.",
+        ctaLabel: "See the related feature",
+        ctaHref: "/features/automated-survey-processing"
+      },
+      {
+        title: "Infrastructure team: improve job visibility",
+        description: "Explain how managers gained faster visibility into what was processing, blocked, and ready.",
+        ctaLabel: "Explore use cases",
+        ctaHref: "/solutions"
+      },
+      {
+        title: "Boundary review team: shorten reporting cycles",
+        description: "Walk through how AI-guided review and reporting reduced repetitive reporting overhead.",
+        ctaLabel: "Try AI Demo",
+        ctaHref: "/demo"
+      }
+    ]
+  },
+  {
+    slug: "sample-data-files",
+    eyebrow: "Sample Data",
+    title: "Sample files and workflow inputs for evaluation",
+    summary: "Structured examples that help technical evaluators picture how their own GNSS, drone, and review workflows would fit.",
+    description: "Sample data pages reduce onboarding friction by showing the kinds of inputs, workflow states, and outputs the platform is designed around.",
+    command: commandExamples[1],
+    relatedFeatureSlug: "gnss-data-handling",
+    relatedUseCaseSlug: "gis-professionals",
+    items: [
+      {
+        title: "GNSS CSV sample package",
+        description: "Show how AI maps uploaded survey points to the right project and processing workflow.",
+        ctaLabel: "Explore GNSS feature",
+        ctaHref: "/features/gnss-data-handling"
+      },
+      {
+        title: "Boundary review sample project",
+        description: "Illustrate how map review, issue highlighting, and reports fit into one AI-directed workflow.",
+        ctaLabel: "See boundary workflow",
+        ctaHref: "/use-cases/boundary-review-teams"
+      },
+      {
+        title: "Mixed survey input checklist",
+        description: "Help teams understand what makes file intake smoother and faster at the start of a job.",
+        ctaLabel: "Browse docs",
+        ctaHref: "/docs"
+      }
+    ]
+  },
+  {
+    slug: "prompt-library",
+    eyebrow: "Prompt Library",
+    title: "AI command examples teams can reuse immediately",
+    summary: "Prompt patterns that make the AI-first product model clear in seconds: instruction in, workflow moves forward.",
+    description: "This page is one of the strongest conversion bridges on the site because it turns abstract AI messaging into specific commands and visible outcomes.",
+    command: commandExamples[2],
+    relatedFeatureSlug: "ai-insights-reports",
+    relatedUseCaseSlug: "government-agencies",
+    items: [
+      {
+        title: "Project creation prompts",
+        description: "Examples for creating a survey project, assigning context, and preparing the first workflow step.",
+        ctaLabel: "Start Free",
+        ctaHref: "/sign-up"
+      },
+      {
+        title: "Processing and QA prompts",
+        description: "Examples for launching GNSS workflows, reviewing job status, and asking AI to prioritize issues.",
+        ctaLabel: "Try AI Demo",
+        ctaHref: "/demo"
+      },
+      {
+        title: "Reporting prompts",
+        description: "Examples for generating reports, summarizing insights, and preparing outputs for delivery.",
+        ctaLabel: "Open AI Command Center",
+        ctaHref: "/ai-command-center"
+      }
     ]
   }
 ];

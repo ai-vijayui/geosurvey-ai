@@ -5,6 +5,7 @@ import { AICommandBlock } from "../components/AICommandBlock";
 import { CTASection } from "../components/CTASection";
 import { Seo } from "../components/Seo";
 import { SectionContainer } from "../components/SectionContainer";
+import { VisualCluster } from "../components/VisualCluster";
 import { commandExamples } from "../siteContent";
 
 export function AICommandCenterPage() {
@@ -39,7 +40,7 @@ export function AICommandCenterPage() {
         title="One command can replace several manual setup steps."
         description="Instead of navigating the platform screen by screen, teams direct the workflow in plain language."
       >
-        <div className="marketing-two-column">
+        <div className="marketing-problem-solution marketing-problem-solution--enhanced">
           <Card className="marketing-panel-card">
             <span className="marketing-panel-card__label">Command path</span>
             <ul className="marketing-list marketing-list--spacious">
@@ -57,6 +58,7 @@ export function AICommandCenterPage() {
               <li>Better visibility into what the platform did and what comes next</li>
             </ul>
           </Card>
+          <VisualCluster variant="platform" />
         </div>
       </SectionContainer>
 
@@ -70,6 +72,14 @@ export function AICommandCenterPage() {
             <AICommandBlock key={example.prompt} example={example} compact title="Command example" />
           ))}
         </div>
+      </SectionContainer>
+
+      <SectionContainer
+        eyebrow="Why it feels different"
+        title="This is a command-driven product, not a chat widget pasted onto a dashboard."
+        description="The AI layer is tied directly to project creation, job setup, processing, review, and outputs."
+      >
+        <VisualCluster variant="compare" />
       </SectionContainer>
 
       <CTASection />

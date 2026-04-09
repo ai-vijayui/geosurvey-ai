@@ -29,6 +29,10 @@ export function Footer() {
             <span className="marketing-footer__heading">Resources</span>
             <Link to="/blog">Blog</Link>
             <Link to="/resources">Resources</Link>
+            <Link to="/resources/guides">Guides</Link>
+            <Link to="/resources/case-studies">Case Studies</Link>
+            <Link to="/resources/sample-data-files">Sample Data Files</Link>
+            <Link to="/resources/prompt-library">Prompt Library</Link>
             <Link to="/docs">Documentation</Link>
             <Link to="/contact">Contact</Link>
           </div>

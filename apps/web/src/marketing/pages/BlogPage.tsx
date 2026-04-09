@@ -4,6 +4,7 @@ import { Seo } from "../components/Seo";
 import { AICommandBlock } from "../components/AICommandBlock";
 import { SectionContainer } from "../components/SectionContainer";
 import { StaggerGroup } from "../../components/animation/StaggerGroup";
+import { VisualCluster } from "../components/VisualCluster";
 import { blogArticles, commandExamples } from "../siteContent";
 
 export function BlogPage() {
@@ -27,36 +28,38 @@ export function BlogPage() {
         schema={schema}
       />
       <SectionContainer eyebrow="Blog" title="Thoughtful content for teams modernizing survey operations." description="The blog should attract search traffic and then move readers into features, AI Command Center, and signup.">
-      <div className="marketing-blog-categories">
-        <Link to="/blog/category/industry-insights">Industry Insights</Link>
-        <Link to="/blog/category/tutorials">Tutorials</Link>
-        <Link to="/blog/category/product-updates">Product Updates</Link>
-      </div>
-      <StaggerGroup className="marketing-blog-list">
-        {blogArticles.map((post) => (
-          <Card key={post.slug} className="marketing-blog-card">
-            <div className="marketing-blog-card__meta">
-              <span>{post.categoryLabel}</span>
-              <span>{post.readTime}</span>
+        <div className="marketing-two-column marketing-two-column--visual">
+          <VisualCluster variant="resources" />
+          <Card className="marketing-panel-card">
+            <span className="marketing-panel-card__label">Browse categories</span>
+            <div className="marketing-blog-categories">
+              <Link to="/blog/category/industry-insights">Industry Insights</Link>
+              <Link to="/blog/category/tutorials">Tutorials</Link>
+              <Link to="/blog/category/product-updates">Product Updates</Link>
             </div>
-            <h3>{post.title}</h3>
-            <p>{post.excerpt}</p>
-            <Link className="marketing-inline-link" to={`/blog/${post.slug}`}>Read article</Link>
+            <p>The blog should work like a discovery engine: attract search, establish trust, then route the reader into AI Command, features, and signup.</p>
           </Card>
-        ))}
-      </StaggerGroup>
+        </div>
+      </SectionContainer>
+      <SectionContainer eyebrow="Latest articles" title="Make the content feel curated, not dumped into a grid." description="This keeps the blog more premium and easier to scan.">
+        <StaggerGroup className="marketing-blog-list">
+          {blogArticles.map((post) => (
+            <Card key={post.slug} className="marketing-blog-card marketing-panel-card">
+              <div className="marketing-blog-card__meta">
+                <span>{post.categoryLabel}</span>
+                <span>{post.readTime}</span>
+              </div>
+              <h3>{post.title}</h3>
+              <p>{post.excerpt}</p>
+              <Link className="marketing-inline-link" to={`/blog/${post.slug}`}>Read article</Link>
+            </Card>
+          ))}
+        </StaggerGroup>
       </SectionContainer>
       <SectionContainer eyebrow="Blog CTA" title="Each article should lead into the AI-first product path." description="This keeps the blog from becoming a dead-end traffic sink.">
-        <div className="marketing-two-column">
+        <div className="marketing-two-column marketing-two-column--visual">
           <AICommandBlock example={commandExamples[2]} title="Try the AI command path" />
-          <Card className="marketing-panel-card">
-            <span className="marketing-panel-card__label">Where the blog should send users</span>
-            <div className="marketing-inline-links">
-              <Link to="/ai-command-center">AI Command Center</Link>
-              <Link to="/features">Explore Features</Link>
-              <Link to="/sign-up">Start Free</Link>
-            </div>
-          </Card>
+          <VisualCluster variant="compare" />
         </div>
       </SectionContainer>
     </>

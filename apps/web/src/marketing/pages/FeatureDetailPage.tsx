@@ -5,6 +5,7 @@ import { AICommandBlock } from "../components/AICommandBlock";
 import { CTASection } from "../components/CTASection";
 import { Seo } from "../components/Seo";
 import { SectionContainer } from "../components/SectionContainer";
+import { VisualCluster } from "../components/VisualCluster";
 import { blogArticles, featurePages, useCasePages } from "../siteContent";
 
 export function FeatureDetailPage() {
@@ -54,7 +55,7 @@ export function FeatureDetailPage() {
       </SectionContainer>
 
       <SectionContainer eyebrow="Output preview" title="What the user gets back" description={feature.outputPreview}>
-        <div className="marketing-two-column">
+        <div className="marketing-problem-solution marketing-problem-solution--enhanced">
           <Card className="marketing-panel-card">
             <span className="marketing-panel-card__label">Result</span>
             <p>{feature.outputPreview}</p>
@@ -67,6 +68,7 @@ export function FeatureDetailPage() {
               <Link to="/demo">Try AI Demo</Link>
             </div>
           </Card>
+          <VisualCluster variant="platform" />
         </div>
       </SectionContainer>
 
