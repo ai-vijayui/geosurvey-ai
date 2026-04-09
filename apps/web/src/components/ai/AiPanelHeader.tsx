@@ -2,10 +2,10 @@ type Props = {
   title: string;
   subtitle: string;
   onClear: () => void;
-  onCloseMobile?: () => void;
+  onClose?: () => void;
 };
 
-export function AiPanelHeader({ title, subtitle, onClear, onCloseMobile }: Props) {
+export function AiPanelHeader({ title, subtitle, onClear, onClose }: Props) {
   return (
     <div className="ai-panel-header">
       <div className="stack ai-panel-header-copy" style={{ gap: "0.2rem" }}>
@@ -19,8 +19,8 @@ export function AiPanelHeader({ title, subtitle, onClear, onCloseMobile }: Props
         <button type="button" className="button-ghost" onClick={onClear}>
           Clear
         </button>
-        {onCloseMobile ? (
-          <button type="button" className="button-ghost ai-mobile-close" onClick={onCloseMobile}>
+        {onClose ? (
+          <button type="button" className="button-ghost ai-mobile-close" onClick={onClose}>
             Close
           </button>
         ) : null}

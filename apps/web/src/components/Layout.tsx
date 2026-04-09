@@ -77,7 +77,7 @@ function LayoutShell() {
   const authEnabled = Boolean(import.meta.env.VITE_CLERK_PUBLISHABLE_KEY);
   const navigate = useNavigate();
   const location = useLocation();
-  const { mobileOpen, setMobileOpen } = useAiPanelState();
+  const { desktopOpen, setDesktopOpen, mobileOpen, setMobileOpen } = useAiPanelState();
   const [isCreateProjectOpen, setIsCreateProjectOpen] = useState(false);
   const [search, setSearch] = useState("");
 
@@ -126,6 +126,14 @@ function LayoutShell() {
       return;
     }
     navigate("/jobs");
+  }
+
+  function openAiPanel() {
+    if (typeof window !== "undefined" && window.innerWidth < 1024) {
+      setMobileOpen(true);
+      return;
+    }
+    setDesktopOpen(true);
   }
 
   return (
@@ -222,10 +230,16 @@ function LayoutShell() {
               </button>
               <button
                 type="button"
-                className="button-ghost ai-mobile-trigger"
-                onClick={() => navigate("/ai")}
+                className={`icon-toolbar-button${desktopOpen || mobileOpen ? " active" : ""}`}
+                onClick={openAiPanel}
+                aria-label="Open AI chat panel"
+                title="Open AI chat panel"
               >
-                Ask AI
+                <span className="icon-toolbar-button__glyph" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" focusable="false">
+                    <path d="M12 3 4 7.5v9L12 21l8-4.5v-9L12 3Zm0 2.3 5.8 3.2L12 11.7 6.2 8.5 12 5.3Zm-6 4.9 5 2.8v5.7l-5-2.8v-5.7Zm7 5.7V13l5-2.8v5.7l-5 2.8Z" />
+                  </svg>
+                </span>
               </button>
               <NotificationCenter />
               {authEnabled ? <UserButton /> : <span className="status-badge">Dev mode</span>}
@@ -233,24 +247,24 @@ function LayoutShell() {
           </header>
 
           <div className="main-scroll-area reference-main">
-            <div className={`reference-main__content min-w-0 ${showShellAiPanel ? "reference-main__content--with-panel" : ""}`}>
+            <div className="reference-main__content min-w-0">
               <main>
                 <Outlet />
               </main>
             </div>
           </div>
         </section>
-
-        {showShellAiPanel ? (
-          <aside className="right-ai-panel reference-panel min-h-0">
-            <FixedAiPanel />
-          </aside>
-        ) : null}
       </div>
+      {showShellAiPanel && desktopOpen ? <button type="button" className="ai-desktop-backdrop" aria-label="Close AI panel" onClick={() => setDesktopOpen(false)} /> : null}
+      {showShellAiPanel && desktopOpen ? (
+        <aside className="ai-desktop-overlay" aria-label="AI chat panel">
+          <FixedAiPanel onClose={() => setDesktopOpen(false)} />
+        </aside>
+      ) : null}
       {mobileOpen ? <button type="button" className="ai-sidebar-backdrop" aria-label="Close AI panel" onClick={() => setMobileOpen(false)} /> : null}
       {mobileOpen ? (
         <div className="ai-mobile-sheet">
-          <FixedAiPanel mobile onCloseMobile={() => setMobileOpen(false)} />
+          <FixedAiPanel mobile onClose={() => setMobileOpen(false)} />
         </div>
       ) : null}
       <ToastViewport />

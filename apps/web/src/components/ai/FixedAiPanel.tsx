@@ -28,7 +28,7 @@ async function getToken() {
 
 type Props = {
   mobile?: boolean;
-  onCloseMobile?: () => void;
+  onClose?: () => void;
   contextOverride?: AiViewContext;
 };
 
@@ -85,7 +85,7 @@ function isSkipIntent(input: string) {
   return /^(skip|no|none|nope)$/i.test(input.trim());
 }
 
-export function FixedAiPanel({ mobile = false, onCloseMobile, contextOverride }: Props) {
+export function FixedAiPanel({ mobile = false, onClose, contextOverride }: Props) {
   const [value, setValue] = useState("");
   const [streaming, setStreaming] = useState(false);
   const [commandBusy, setCommandBusy] = useState(false);
@@ -756,7 +756,7 @@ export function FixedAiPanel({ mobile = false, onCloseMobile, contextOverride }:
 
   return (
     <section className={`ai-panel-inner fixed-ai-panel${mobile ? " fixed-ai-panel-mobile" : ""}`}>
-      <AiPanelHeader title={ai.title} subtitle={ai.subtitle} onClear={() => clearThread(ai.threadKey)} onCloseMobile={mobile ? onCloseMobile : undefined} />
+      <AiPanelHeader title={ai.title} subtitle={ai.subtitle} onClear={() => clearThread(ai.threadKey)} onClose={onClose} />
 
       <div className="fixed-ai-panel-body">
         <AiContextCard jobAware={ai.jobAware} job={jobQuery.data ?? null} helperText={helperText} />

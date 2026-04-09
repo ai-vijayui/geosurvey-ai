@@ -12,6 +12,8 @@ export type AiFolder = { id: string; name: string };
 const STORAGE_KEY = "geosurvey_ai_workspace_state";
 
 type AiPanelContextValue = {
+  desktopOpen: boolean;
+  setDesktopOpen: (open: boolean) => void;
   mobileOpen: boolean;
   setMobileOpen: (open: boolean) => void;
   getThread: (key: string) => AiMessage[];
@@ -28,6 +30,7 @@ type AiPanelContextValue = {
 const AiPanelContext = createContext<AiPanelContextValue | null>(null);
 
 export function AiPanelProvider({ children }: PropsWithChildren) {
+  const [desktopOpen, setDesktopOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [threads, setThreads] = useState<Record<string, AiMessage[]>>({});
   const [folders, setFolders] = useState<AiFolder[]>([]);
@@ -75,6 +78,8 @@ export function AiPanelProvider({ children }: PropsWithChildren) {
 
   const value = useMemo<AiPanelContextValue>(
     () => ({
+      desktopOpen,
+      setDesktopOpen,
       mobileOpen,
       setMobileOpen,
       getThread: (key) => threads[key] ?? [],
@@ -114,7 +119,7 @@ export function AiPanelProvider({ children }: PropsWithChildren) {
         setThreadFolders((current) => ({ ...current, [key]: folderId }));
       }
     }),
-    [folders, mobileOpen, threadFolders, threads]
+    [desktopOpen, folders, mobileOpen, threadFolders, threads]
   );
 
   return <AiPanelContext.Provider value={value}>{children}</AiPanelContext.Provider>;

@@ -1,4 +1,5 @@
 import { SignIn, SignUp, useAuth } from "@clerk/clerk-react";
+import type { ReactNode } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import { AiWorkspaceHubPage } from "./pages/AiWorkspaceHubPage";
@@ -12,12 +13,163 @@ import { ProjectsPage } from "./pages/ProjectsPage";
 import { ReportsPage } from "./pages/ReportsPage";
 import { SettingsPage } from "./pages/SettingsPage";
 
+const clerkAppearance = {
+  variables: {
+    colorPrimary: "#f45b55",
+    colorText: "#1c1c1c",
+    colorTextSecondary: "#6f675f",
+    colorBackground: "#ffffff",
+    colorInputBackground: "#fcfbf8",
+    colorInputText: "#1c1c1c",
+    borderRadius: "18px",
+    fontFamily: '"Plus Jakarta Sans", "Segoe UI", sans-serif'
+  },
+  elements: {
+    rootBox: "auth-shell__form-root",
+    cardBox: "auth-shell__card-box",
+    card: "auth-shell__card",
+    headerTitle: "auth-shell__clerk-title",
+    headerSubtitle: "auth-shell__clerk-subtitle",
+    socialButtonsBlockButton: "auth-shell__social-button",
+    socialButtonsBlockButtonText: "auth-shell__social-button-text",
+    dividerLine: "auth-shell__divider-line",
+    dividerText: "auth-shell__divider-text",
+    formFieldLabel: "auth-shell__field-label",
+    formFieldInput: "auth-shell__field-input",
+    formButtonPrimary: "auth-shell__primary-button",
+    footerActionLink: "auth-shell__footer-link",
+    formResendCodeLink: "auth-shell__footer-link",
+    identityPreviewEditButton: "auth-shell__footer-link",
+    formFieldWarningText: "auth-shell__warning-text",
+    formFieldErrorText: "auth-shell__error-text",
+    alertText: "auth-shell__alert-text",
+    alert: "auth-shell__alert",
+    footer: "auth-shell__footer"
+  }
+};
+
+function AuthShell({
+  eyebrow,
+  title,
+  subtitle,
+  children
+}: {
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className="auth-shell">
+      <div className="auth-shell__backdrop" />
+      <div className="auth-shell__grid">
+        <section className="auth-shell__form-panel">
+          <div className="auth-shell__form-rail">
+            <div className="auth-shell__mini-brand">
+              <div className="auth-shell__brand-mark auth-shell__brand-mark--small">GS</div>
+              <div>
+                <div className="auth-shell__brand-title">GEOSURVEY</div>
+                <div className="auth-shell__brand-copy">Operational survey workspace</div>
+              </div>
+            </div>
+
+            <div className="auth-shell__form-frame">{children}</div>
+
+            <div className="auth-shell__form-note">
+              Secure access for survey teams, project managers, and operations leads.
+            </div>
+          </div>
+        </section>
+
+        <section className="auth-shell__brand-panel">
+          <div className="auth-shell__brand">
+            <div className="auth-shell__brand-mark">GS</div>
+            <div>
+              <div className="auth-shell__brand-title">GEOSURVEY</div>
+              <div className="auth-shell__brand-copy">Operational survey workspace</div>
+            </div>
+          </div>
+
+          <div className="auth-shell__hero">
+            <span className="auth-shell__eyebrow">{eyebrow}</span>
+            <h1>{title}</h1>
+            <p>{subtitle}</p>
+          </div>
+
+          <div className="auth-shell__onboarding">
+            <div className="auth-shell__journey-card">
+              <div className="auth-shell__journey-header">
+                <span className="auth-shell__stat-label">Getting started</span>
+                <strong>What happens after you sign in</strong>
+              </div>
+              <div className="auth-shell__journey-steps">
+                <div className="auth-shell__journey-step">
+                  <span className="auth-shell__journey-index">1</span>
+                  <div>
+                    <strong>Create a project workspace</strong>
+                    <p>Set up a project so every survey, file set, and report stays organized from day one.</p>
+                  </div>
+                </div>
+                <div className="auth-shell__journey-step">
+                  <span className="auth-shell__journey-index">2</span>
+                  <div>
+                    <strong>Launch jobs and upload data</strong>
+                    <p>Bring in GNSS, drone, or point-cloud data and keep processing tied to the right job context.</p>
+                  </div>
+                </div>
+                <div className="auth-shell__journey-step">
+                  <span className="auth-shell__journey-index">3</span>
+                  <div>
+                    <strong>Track progress and review outputs</strong>
+                    <p>Monitor status, inspect results, and use AI assistance without jumping across disconnected tools.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="auth-shell__stats">
+              <article className="auth-shell__stat-card">
+                <span className="auth-shell__stat-label">Workflow</span>
+                <strong>Projects, jobs, processing, reporting</strong>
+                <p>One workspace for the entire survey lifecycle.</p>
+              </article>
+              <article className="auth-shell__stat-card">
+                <span className="auth-shell__stat-label">Operations</span>
+                <strong>Live field-to-office coordination</strong>
+                <p>Keep teams aligned with consistent project status and next actions.</p>
+              </article>
+              <article className="auth-shell__stat-card">
+                <span className="auth-shell__stat-label">AI layer</span>
+                <strong>Guided analysis and execution</strong>
+                <p>Move from upload to insight without leaving the platform shell.</p>
+              </article>
+            </div>
+
+            <div className="auth-shell__proof-strip">
+              <div className="auth-shell__proof-item">
+                <strong>Fewer handoffs</strong>
+                <span>Survey operations stay in one system from intake to export.</span>
+              </div>
+              <div className="auth-shell__proof-item">
+                <strong>Clear next actions</strong>
+                <span>Users land in a workflow-oriented workspace instead of a blank admin portal.</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  );
+}
+
 function DevAuthPage({ title }: { title: string }) {
   return (
-    <div className="mx-auto mt-16 flex max-w-lg flex-col gap-3 rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-      <strong className="text-xl font-semibold text-slate-900">{title}</strong>
-      <span className="text-sm leading-6 text-slate-500">Clerk is disabled in local dev until VITE_CLERK_PUBLISHABLE_KEY is set.</span>
-    </div>
+    <AuthShell eyebrow="Authentication offline" title={title} subtitle="Clerk is disabled in this environment, so the production sign-in experience is unavailable right now.">
+      <div className="auth-shell__dev-card">
+        <strong className="auth-shell__dev-title">{title}</strong>
+        <p className="auth-shell__dev-copy">Set <code>VITE_CLERK_PUBLISHABLE_KEY</code> to enable the live GeoSurvey authentication flow.</p>
+      </div>
+    </AuthShell>
   );
 }
 
@@ -37,7 +189,11 @@ function SignInRoute() {
     return <Navigate to="/dashboard" replace />;
   }
 
-  return <SignIn fallbackRedirectUrl="/dashboard" signUpUrl="/sign-up" />;
+  return (
+    <AuthShell eyebrow="Secure access" title="Run every survey from one operations workspace." subtitle="Sign in to manage field data, monitor processing, and move from intake to delivery in one place.">
+      <SignIn appearance={clerkAppearance} routing="path" path="/sign-in" fallbackRedirectUrl="/dashboard" signUpUrl="/sign-up" />
+    </AuthShell>
+  );
 }
 
 function SignUpRoute() {
@@ -46,7 +202,11 @@ function SignUpRoute() {
     return <Navigate to="/dashboard" replace />;
   }
 
-  return <SignUp fallbackRedirectUrl="/dashboard" signInUrl="/sign-in" />;
+  return (
+    <AuthShell eyebrow="Create your workspace" title="Bring your survey team into a production-ready command center." subtitle="Create an account to organize projects, launch jobs, and keep processing visible across the entire pipeline.">
+      <SignUp appearance={clerkAppearance} routing="path" path="/sign-up" fallbackRedirectUrl="/dashboard" signInUrl="/sign-in" />
+    </AuthShell>
+  );
 }
 
 export default function App() {
