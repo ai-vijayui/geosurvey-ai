@@ -1,0 +1,13 @@
+node_modules
+apps/*/node_modules
+dist
+apps/*/dist
+.git
+.gitignore
+.env
+.env.development
+npm-debug.log*
+Dockerfile*
+apps/*/Dockerfile.dev
+coverage
+.DS_Store
