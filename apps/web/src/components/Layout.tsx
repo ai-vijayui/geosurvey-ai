@@ -150,7 +150,7 @@ function LayoutShell() {
       />
       <div className="app-shell__frame reference-shell__frame">
         <aside className="left-sidebar reference-sidebar z-20">
-          <div className="grid h-full content-start gap-5">
+          <div className="grid h-full grid-rows-[auto_auto_1fr_auto] content-start gap-5">
             <div className="reference-brand">
               <div className="reference-brand__mark">GS</div>
               <div className="grid gap-0.5">
@@ -160,10 +160,30 @@ function LayoutShell() {
             </div>
 
             <div className="reference-profile">
-              <div className="reference-profile__avatar">GS</div>
-              <div className="grid gap-0.5">
-                <strong className="text-sm text-slate-900">Survey Lead</strong>
-                <span className="text-xs text-slate-500">{authEnabled ? "Authenticated session" : "Local development mode"}</span>
+              <div className="grid gap-3 w-full">
+                <div className="grid gap-0.5">
+                  <strong className="text-sm text-slate-900">Change project</strong>
+                  <span className="text-xs text-slate-500">
+                    {projects.length === 0
+                      ? "Create a project to organize jobs and outputs."
+                      : authEnabled
+                        ? "Switch the active project workspace."
+                        : "Switch the current development project."}
+                  </span>
+                </div>
+                <select
+                  className="min-h-[42px] w-full rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 outline-none"
+                  aria-label="Project switcher"
+                  value={activeProjectId ?? ""}
+                  onChange={(event) => handleProjectSwitch(event.target.value)}
+                >
+                  {projects.length === 0 ? <option value="">No projects yet</option> : null}
+                  {projects.map((project) => (
+                    <option key={project.id} value={project.id}>
+                      {project.name}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 
@@ -211,20 +231,6 @@ function LayoutShell() {
             </div>
 
             <div className="reference-header__actions">
-              <select className="min-h-[42px] w-[220px] rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 outline-none" aria-label="Recent project switcher" value={activeProjectId ?? ""} onChange={(event) => handleProjectSwitch(event.target.value)}>
-                {projects.length === 0 ? <option value="">No projects yet</option> : null}
-                {projects.map((project) => (
-                  <option key={project.id} value={project.id}>
-                    {project.name}
-                  </option>
-                ))}
-              </select>
-              <button type="button" className="button-secondary" onClick={() => navigate("/processing")}>
-                Processing {dashboardQuery.data?.activeJobs ? `(${dashboardQuery.data.activeJobs})` : ""}
-              </button>
-              <button type="button" className="button-secondary" onClick={() => setIsCreateProjectOpen(true)}>
-                New Project
-              </button>
               <button type="button" className="button-primary" onClick={() => navigate("/jobs?createJob=1")}>
                 New Job
               </button>

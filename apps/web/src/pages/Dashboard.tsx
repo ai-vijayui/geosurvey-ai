@@ -1,8 +1,9 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AiInsightCard } from "../components/AiInsightCard";
 import { MapView } from "../components/MapView";
+import { ProjectCreateModal } from "../components/ProjectCreateModal";
 import { EmptyState } from "../components/feedback/EmptyState";
 import { ProgressTracker } from "../components/ProgressTracker";
 import { WorkflowStepper } from "../components/workflow/WorkflowStepper";
@@ -32,6 +33,8 @@ type ProjectRecord = {
 };
 
 export function Dashboard() {
+  const navigate = useNavigate();
+  const [isCreateProjectOpen, setIsCreateProjectOpen] = useState(false);
   const statsQuery = useQuery({
     queryKey: ["dashboard-stats"],
     queryFn: () => apiGet<DashboardStats>("/api/dashboard/stats")
@@ -67,15 +70,28 @@ export function Dashboard() {
 
   return (
     <div className="reference-page dashboard-page" data-tour="dashboard-page">
+      <ProjectCreateModal
+        isOpen={isCreateProjectOpen}
+        onClose={() => setIsCreateProjectOpen(false)}
+        onCreated={(project) => {
+          navigate(`/jobs?projectId=${project.id}&createJob=1`);
+        }}
+      />
       <div className="reference-page-header dashboard-page-header">
         <div className="reference-page-header__copy dashboard-page-header__copy">
           <h1>Dashboard</h1>
           <p>Monitor the GeoSurvey pipeline with a calm operations view of live metrics, workflow readiness, mapped coverage, and recent AI findings.</p>
         </div>
         <div className="reference-actions">
-          <Link className="button-primary dashboard-cta-link" to={projects.length === 0 ? "/projects" : "/jobs?createJob=1"}>
-            {projects.length === 0 ? "New Project" : "New Job"}
-          </Link>
+          {projects.length === 0 ? (
+            <button className="button-primary dashboard-cta-link" onClick={() => setIsCreateProjectOpen(true)}>
+              New Project
+            </button>
+          ) : (
+            <Link className="button-primary dashboard-cta-link" to="/jobs?createJob=1">
+              New Job
+            </Link>
+          )}
         </div>
       </div>
 
@@ -93,9 +109,15 @@ export function Dashboard() {
                   : "Live progress, mapped coverage, and AI findings stay visible here while the team keeps working."}
           </span>
           <div className="dashboard-hero-card__actions flex flex-wrap items-center gap-3">
-            <Link className="button-primary dashboard-cta-link" to={projects.length === 0 ? "/projects" : "/jobs"}>
-              {projects.length === 0 ? "Create project" : totalJobs === 0 ? "Create job" : "Open jobs"}
-            </Link>
+            {projects.length === 0 ? (
+              <button className="button-primary dashboard-cta-link" onClick={() => setIsCreateProjectOpen(true)}>
+                Create project
+              </button>
+            ) : (
+              <Link className="button-primary dashboard-cta-link" to="/jobs">
+                {totalJobs === 0 ? "Create job" : "Open jobs"}
+              </Link>
+            )}
             <Link className="table-action" to="/processing">
               Open processing
             </Link>
@@ -133,7 +155,7 @@ export function Dashboard() {
         <EmptyState
           title="Create your first project"
           description="Projects unlock the full workflow: jobs, uploads, processing, review, and export."
-          action={<Link className="button-primary dashboard-cta-link" to="/projects">Create Project</Link>}
+          action={<button className="button-primary dashboard-cta-link" onClick={() => setIsCreateProjectOpen(true)}>Create Project</button>}
         />
       ) : totalJobs === 0 ? (
         <EmptyState

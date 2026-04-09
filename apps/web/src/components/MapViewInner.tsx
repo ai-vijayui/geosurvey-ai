@@ -229,7 +229,11 @@ export default function MapViewInner({ geojson, center = [77.5946, 12.9716], zoo
             ) : (
               <span>Area (ha): {String((popupFeature.properties ?? {}).areaHectares ?? "N/A")}</span>
             )}
-            <button onClick={() => setPopupFeature(null)}>Close</button>
+            <button className="icon-button icon-button-ghost" onClick={() => setPopupFeature(null)} aria-label="Close map popup" title="Close">
+              <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                <path d="M6.7 5.3 12 10.6l5.3-5.3 1.4 1.4L13.4 12l5.3 5.3-1.4 1.4L12 13.4l-5.3 5.3-1.4-1.4L10.6 12 5.3 6.7l1.4-1.4Z" />
+              </svg>
+            </button>
           </div>
         </div>
       ) : null}

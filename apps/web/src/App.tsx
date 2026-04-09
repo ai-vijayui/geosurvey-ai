@@ -75,6 +75,42 @@ function AuthShell({
 
             <div className="auth-shell__form-frame">{children}</div>
 
+            <div className="auth-shell__sidebar-panel">
+              <div className="auth-shell__sidebar-tab">How it works</div>
+              <div className="auth-shell__sidebar-card">
+                <div className="auth-shell__sidebar-section">
+                  <strong>Use case: Drone progress survey for a road project</strong>
+                  <p>
+                    A field team uploads drone imagery, the office team starts processing, and the manager reviews outputs
+                    and AI guidance in one shared workspace.
+                  </p>
+                </div>
+
+                <div className="auth-shell__sidebar-visual">
+                  <div className="auth-shell__sidebar-visual-step">
+                    <span>1</span>
+                    <strong>Create project</strong>
+                  </div>
+                  <div className="auth-shell__sidebar-visual-step">
+                    <span>2</span>
+                    <strong>Upload survey data</strong>
+                  </div>
+                  <div className="auth-shell__sidebar-visual-step">
+                    <span>3</span>
+                    <strong>Review outputs</strong>
+                  </div>
+                </div>
+
+                <div className="auth-shell__sidebar-section">
+                  <strong>Practice exercise</strong>
+                  <p>
+                    Create a sample project named <code>Highway Demo Survey</code>, add one job, upload a test file set,
+                    and confirm the job reaches review status.
+                  </p>
+                </div>
+              </div>
+            </div>
+
             <div className="auth-shell__form-note">
               Secure access for survey teams, project managers, and operations leads.
             </div>
@@ -82,77 +118,61 @@ function AuthShell({
         </section>
 
         <section className="auth-shell__brand-panel">
-          <div className="auth-shell__brand">
-            <div className="auth-shell__brand-mark">GS</div>
-            <div>
-              <div className="auth-shell__brand-title">GEOSURVEY</div>
-              <div className="auth-shell__brand-copy">Operational survey workspace</div>
-            </div>
-          </div>
-
-          <div className="auth-shell__hero">
-            <span className="auth-shell__eyebrow">{eyebrow}</span>
-            <h1>{title}</h1>
-            <p>{subtitle}</p>
-          </div>
-
-          <div className="auth-shell__onboarding">
-            <div className="auth-shell__journey-card">
-              <div className="auth-shell__journey-header">
-                <span className="auth-shell__stat-label">Getting started</span>
-                <strong>What happens after you sign in</strong>
-              </div>
-              <div className="auth-shell__journey-steps">
-                <div className="auth-shell__journey-step">
-                  <span className="auth-shell__journey-index">1</span>
-                  <div>
-                    <strong>Create a project workspace</strong>
-                    <p>Set up a project so every survey, file set, and report stays organized from day one.</p>
-                  </div>
-                </div>
-                <div className="auth-shell__journey-step">
-                  <span className="auth-shell__journey-index">2</span>
-                  <div>
-                    <strong>Launch jobs and upload data</strong>
-                    <p>Bring in GNSS, drone, or point-cloud data and keep processing tied to the right job context.</p>
-                  </div>
-                </div>
-                <div className="auth-shell__journey-step">
-                  <span className="auth-shell__journey-index">3</span>
-                  <div>
-                    <strong>Track progress and review outputs</strong>
-                    <p>Monitor status, inspect results, and use AI assistance without jumping across disconnected tools.</p>
-                  </div>
-                </div>
+          <div className="auth-shell__brand-rail">
+            <div className="auth-shell__brand">
+              <div className="auth-shell__brand-mark">GS</div>
+              <div>
+                <div className="auth-shell__brand-title">GEOSURVEY</div>
+                <div className="auth-shell__brand-copy">Operational survey workspace</div>
               </div>
             </div>
 
-            <div className="auth-shell__stats">
-              <article className="auth-shell__stat-card">
-                <span className="auth-shell__stat-label">Workflow</span>
-                <strong>Projects, jobs, processing, reporting</strong>
-                <p>One workspace for the entire survey lifecycle.</p>
-              </article>
-              <article className="auth-shell__stat-card">
-                <span className="auth-shell__stat-label">Operations</span>
-                <strong>Live field-to-office coordination</strong>
-                <p>Keep teams aligned with consistent project status and next actions.</p>
-              </article>
-              <article className="auth-shell__stat-card">
-                <span className="auth-shell__stat-label">AI layer</span>
-                <strong>Guided analysis and execution</strong>
-                <p>Move from upload to insight without leaving the platform shell.</p>
-              </article>
+            <div className="auth-shell__hero">
+              <span className="auth-shell__eyebrow">{eyebrow}</span>
+              <h1>{title}</h1>
+              <p>{subtitle}</p>
             </div>
 
-            <div className="auth-shell__proof-strip">
-              <div className="auth-shell__proof-item">
-                <strong>Fewer handoffs</strong>
-                <span>Survey operations stay in one system from intake to export.</span>
+            <div className="auth-shell__onboarding">
+              <div className="auth-shell__journey-card">
+                <div className="auth-shell__journey-header">
+                  <span className="auth-shell__stat-label">Getting started</span>
+                  <strong>What happens after you sign in</strong>
+                </div>
+                <div className="auth-shell__journey-steps">
+                  <div className="auth-shell__journey-step">
+                    <span className="auth-shell__journey-index">1</span>
+                    <div>
+                      <strong>Create a project workspace</strong>
+                      <p>Set up a project so every survey, file set, and report stays organized from day one.</p>
+                    </div>
+                  </div>
+                  <div className="auth-shell__journey-step">
+                    <span className="auth-shell__journey-index">2</span>
+                    <div>
+                      <strong>Launch jobs and upload data</strong>
+                      <p>Bring in GNSS, drone, or point-cloud data and keep processing tied to the right job context.</p>
+                    </div>
+                  </div>
+                  <div className="auth-shell__journey-step">
+                    <span className="auth-shell__journey-index">3</span>
+                    <div>
+                      <strong>Track progress and review outputs</strong>
+                      <p>Monitor status, inspect results, and use AI assistance without jumping across disconnected tools.</p>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="auth-shell__proof-item">
-                <strong>Clear next actions</strong>
-                <span>Users land in a workflow-oriented workspace instead of a blank admin portal.</span>
+
+              <div className="auth-shell__proof-strip">
+                <div className="auth-shell__proof-item">
+                  <strong>Projects, jobs, processing</strong>
+                  <span>Everything stays inside one operational survey workspace from intake to reporting.</span>
+                </div>
+                <div className="auth-shell__proof-item">
+                  <strong>Clear next actions</strong>
+                  <span>Teams can move from sign-in to live work without jumping across disconnected tools.</span>
+                </div>
               </div>
             </div>
           </div>

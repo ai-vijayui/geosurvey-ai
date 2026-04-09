@@ -68,8 +68,10 @@ export function ProjectCreateModal({ isOpen, onClose, onCreated }: Props) {
             <strong>Create project</strong>
             <span className="text-muted">Start with a project so every job, upload, and report has a clear home.</span>
           </div>
-          <button className="icon-button" onClick={onClose}>
-            Close
+          <button className="icon-button icon-button-ghost" onClick={onClose} aria-label="Close create project modal" title="Close">
+            <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+              <path d="M6.7 5.3 12 10.6l5.3-5.3 1.4 1.4L13.4 12l5.3 5.3-1.4 1.4L12 13.4l-5.3 5.3-1.4-1.4L10.6 12 5.3 6.7l1.4-1.4Z" />
+            </svg>
           </button>
         </div>
 
