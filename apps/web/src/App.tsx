@@ -5,6 +5,7 @@ import { Layout } from "./components/Layout";
 import { AiWorkspaceHubPage } from "./pages/AiWorkspaceHubPage";
 import { Dashboard } from "./pages/Dashboard";
 import { GnssProcessor } from "./pages/GnssProcessor";
+import { HelpPage } from "./pages/Help";
 import { JobList } from "./pages/JobList";
 import { JobWorkspacePage } from "./pages/JobWorkspacePage";
 import { ProcessingPage } from "./pages/ProcessingPage";
@@ -74,42 +75,6 @@ function AuthShell({
             </div>
 
             <div className="auth-shell__form-frame">{children}</div>
-
-            <div className="auth-shell__sidebar-panel">
-              <div className="auth-shell__sidebar-tab">How it works</div>
-              <div className="auth-shell__sidebar-card">
-                <div className="auth-shell__sidebar-section">
-                  <strong>Use case: Drone progress survey for a road project</strong>
-                  <p>
-                    A field team uploads drone imagery, the office team starts processing, and the manager reviews outputs
-                    and AI guidance in one shared workspace.
-                  </p>
-                </div>
-
-                <div className="auth-shell__sidebar-visual">
-                  <div className="auth-shell__sidebar-visual-step">
-                    <span>1</span>
-                    <strong>Create project</strong>
-                  </div>
-                  <div className="auth-shell__sidebar-visual-step">
-                    <span>2</span>
-                    <strong>Upload survey data</strong>
-                  </div>
-                  <div className="auth-shell__sidebar-visual-step">
-                    <span>3</span>
-                    <strong>Review outputs</strong>
-                  </div>
-                </div>
-
-                <div className="auth-shell__sidebar-section">
-                  <strong>Practice exercise</strong>
-                  <p>
-                    Create a sample project named <code>Highway Demo Survey</code>, add one job, upload a test file set,
-                    and confirm the job reaches review status.
-                  </p>
-                </div>
-              </div>
-            </div>
 
             <div className="auth-shell__form-note">
               Secure access for survey teams, project managers, and operations leads.
@@ -246,6 +211,7 @@ export default function App() {
         <Route path="jobs/:id" element={<JobWorkspacePage />} />
         <Route path="processing" element={<ProcessingPage />} />
         <Route path="gnss" element={<GnssProcessor />} />
+        <Route path="help" element={<HelpPage />} />
         <Route path="viewer/:id" element={<PointCloudViewer />} />
         <Route path="reports" element={<ReportsPage />} />
         <Route path="settings" element={<SettingsPage />} />

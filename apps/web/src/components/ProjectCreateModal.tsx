@@ -63,8 +63,8 @@ export function ProjectCreateModal({ isOpen, onClose, onCreated }: Props) {
   return (
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal-card" onClick={(event) => event.stopPropagation()}>
-        <div className="section-title">
-          <div className="stack" style={{ gap: "0.2rem" }}>
+        <div className="modal-panel__header">
+          <div className="modal-panel__header-copy">
             <strong>Create project</strong>
             <span className="text-muted">Start with a project so every job, upload, and report has a clear home.</span>
           </div>
@@ -75,41 +75,43 @@ export function ProjectCreateModal({ isOpen, onClose, onCreated }: Props) {
           </button>
         </div>
 
-        <div className="form-grid">
-          <label className="field field-wide">
-            <span>Project name</span>
-            <input
-              autoFocus
-              value={form.name}
-              onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))}
-              placeholder="North Ridge Boundary Survey"
-            />
-          </label>
-          <label className="field">
-            <span>Client</span>
-            <input
-              value={form.client}
-              onChange={(event) => setForm((current) => ({ ...current, client: event.target.value }))}
-              placeholder="Optional"
-            />
-          </label>
-          <label className="field">
-            <span>Location</span>
-            <input
-              value={form.location}
-              onChange={(event) => setForm((current) => ({ ...current, location: event.target.value }))}
-              placeholder="Optional"
-            />
-          </label>
+        <div className="modal-panel__body">
+          <div className="form-grid">
+            <label className="field field-wide">
+              <span>Project name</span>
+              <input
+                autoFocus
+                value={form.name}
+                onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))}
+                placeholder="North Ridge Boundary Survey"
+              />
+            </label>
+            <label className="field">
+              <span>Client</span>
+              <input
+                value={form.client}
+                onChange={(event) => setForm((current) => ({ ...current, client: event.target.value }))}
+                placeholder="Optional"
+              />
+            </label>
+            <label className="field">
+              <span>Location</span>
+              <input
+                value={form.location}
+                onChange={(event) => setForm((current) => ({ ...current, location: event.target.value }))}
+                placeholder="Optional"
+              />
+            </label>
+          </div>
+
+          <div className="inline-note">
+            Once the project is created, you can immediately create jobs, upload files, and process outputs without leaving the flow.
+          </div>
+
+          {errorMessage ? <div className="error-text">{errorMessage}</div> : null}
         </div>
 
-        <div className="inline-note">
-          Once the project is created, you can immediately create jobs, upload files, and process outputs without leaving the flow.
-        </div>
-
-        {errorMessage ? <div className="error-text">{errorMessage}</div> : null}
-
-        <div className="row" style={{ justifyContent: "flex-end" }}>
+        <div className="modal-panel__footer">
           <button className="button-secondary" onClick={onClose}>Cancel</button>
           <button className="button-primary" disabled={!form.name.trim() || createProject.isPending} onClick={() => createProject.mutate()}>
             {createProject.isPending ? "Creating..." : "Create project"}

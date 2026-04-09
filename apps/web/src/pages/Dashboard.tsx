@@ -83,6 +83,12 @@ export function Dashboard() {
           <p>Monitor the GeoSurvey pipeline with a calm operations view of live metrics, workflow readiness, mapped coverage, and recent AI findings.</p>
         </div>
         <div className="reference-actions">
+          <Link className="button-secondary" to="/help#start-here">
+            Show Me How
+          </Link>
+          <Link className="button-secondary" to="/help#how-this-app-works">
+            Explain This Page
+          </Link>
           {projects.length === 0 ? (
             <button className="button-primary dashboard-cta-link" onClick={() => setIsCreateProjectOpen(true)}>
               New Project
@@ -149,19 +155,19 @@ export function Dashboard() {
           eyebrow="Unavailable"
           title="Dashboard data is unavailable"
           description="The operations overview could not load. Retry to restore live metrics, queue visibility, and AI insights."
-          action={<button className="button-primary" onClick={() => { void statsQuery.refetch(); void processingJobsQuery.refetch(); void projectsQuery.refetch(); }}>Retry</button>}
+          action={<div className="reference-actions"><button className="button-primary" onClick={() => { void statsQuery.refetch(); void processingJobsQuery.refetch(); void projectsQuery.refetch(); }}>Retry</button><Link className="button-secondary" to="/help#troubleshooting">Open Help</Link></div>}
         />
       ) : projects.length === 0 ? (
         <EmptyState
           title="Create your first project"
           description="Projects unlock the full workflow: jobs, uploads, processing, review, and export."
-          action={<button className="button-primary dashboard-cta-link" onClick={() => setIsCreateProjectOpen(true)}>Create Project</button>}
+          action={<div className="reference-actions"><button className="button-primary dashboard-cta-link" onClick={() => setIsCreateProjectOpen(true)}>Create Project</button><Link className="button-secondary" to="/help#getting-started">Open Help</Link></div>}
         />
       ) : totalJobs === 0 ? (
         <EmptyState
           title="Create your first survey job"
           description="Your project is ready. Create a job next so you can upload files, process outputs, and review AI findings."
-          action={<Link className="button-primary dashboard-cta-link" data-tour="create-job-btn" to="/jobs?createJob=1">Create Job</Link>}
+          action={<div className="reference-actions"><Link className="button-primary dashboard-cta-link" data-tour="create-job-btn" to="/jobs?createJob=1">Create Job</Link><Link className="button-secondary" to="/help#workflow-guide">Open Help</Link></div>}
         />
       ) : null}
 

@@ -1,5 +1,7 @@
 import { useState } from "react";
 import type { InputFile } from "@geosurvey-ai/shared";
+import { Link } from "react-router-dom";
+import { UploadHelpPanel } from "./help/UploadHelpPanel";
 import { useNotifications } from "../context/NotificationContext";
 import { apiPost, apiUpload } from "../lib/api";
 
@@ -111,10 +113,19 @@ export function FileUploadZone({ jobId, onUploadComplete, showStartProcessingBut
 
   return (
     <div className="space-y-5" data-tour="upload-zone">
+      <UploadHelpPanel
+        sampleLinks={[
+          { label: "Sample GNSS CSV", href: "/samples/sample-gnss-points.csv" },
+          { label: "Sample Guide", href: "/samples/README.txt" }
+        ]}
+        helpAnchor="/help#what-files-to-upload"
+        demoQuery="/jobs?createJob=1&demoType=GNSS_TRAVERSE&demoName=Demo%20GNSS%20Land%20Survey"
+      />
+
       <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
         <div className="space-y-1">
           <strong className="block text-lg font-semibold text-slate-900">Upload input files</strong>
-          <span className="block text-sm leading-6 text-slate-500">Add source files first, then continue directly into processing and AI review.</span>
+          <span className="block text-sm leading-6 text-slate-500">Add files first, then continue directly into processing and Smart Check review.</span>
         </div>
         <label className="table-action cursor-pointer">
           Browse files
@@ -132,14 +143,14 @@ export function FileUploadZone({ jobId, onUploadComplete, showStartProcessingBut
         <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-900 text-sm font-semibold tracking-[0.18em] text-white">
           UP
         </div>
-        <strong className="text-base font-semibold text-slate-900">Drag and drop survey files here</strong>
-        <span className="mt-2 max-w-[28rem] text-sm leading-6 text-slate-500">Supported: LAS, LAZ, TIFF, CSV, SHP, DXF, PDF, JPG</span>
+        <strong className="text-base font-semibold text-slate-900">Drag and drop files here</strong>
+        <span className="mt-2 max-w-[28rem] text-sm leading-6 text-slate-500">CSV for point lists, JPG for photos, TIFF for map images, LAS or LAZ for 3D scan files, DXF or SHP for land drawings, PDF for notes.</span>
       </label>
       {feedback ? (
         <div className="rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-sm leading-6 text-slate-600">{feedback}</div>
       ) : (
         <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm leading-6 text-slate-500">
-          Accepted formats: {acceptedExts.join(", ")}
+          No file yet? Download a sample and test this page. <Link className="auth-shell__footer-link" to="/help#sample-files">Open sample files help</Link>
         </div>
       )}
       {queue.length > 0 ? (

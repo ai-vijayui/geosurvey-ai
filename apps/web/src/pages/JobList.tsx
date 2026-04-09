@@ -182,13 +182,20 @@ export function JobList() {
     }
     const params = new URLSearchParams(location.search);
     const requestedProject = params.get("projectId");
+    const requestedDemoType = params.get("demoType");
+    const requestedDemoName = params.get("demoName");
     const rememberedProject = typeof window !== "undefined" ? window.localStorage.getItem(lastProjectStorageKey) : null;
     const preferredProject = requestedProject && projects.some((project) => project.id === requestedProject)
       ? requestedProject
       : rememberedProject && projects.some((project) => project.id === rememberedProject)
         ? rememberedProject
         : projects[0]?.id ?? "";
-    setForm((current) => ({ ...current, projectId: preferredProject }));
+    setForm((current) => ({
+      ...current,
+      projectId: preferredProject,
+      type: (requestedDemoType as SurveyType | null) ?? current.type,
+      name: requestedDemoName ?? current.name
+    }));
     setIsModalOpen(true);
   }
 
@@ -233,6 +240,12 @@ export function JobList() {
           </p>
         </div>
         <div className="reference-actions">
+          <Link className="button-secondary" to="/help#first-project">
+            Show Me How
+          </Link>
+          <Link className="button-secondary" to="/help#sample-files">
+            Explain This Page
+          </Link>
           <Link className="button-secondary" to="/projects">
             View projects
           </Link>
@@ -503,91 +516,95 @@ export function JobList() {
       {isModalOpen ? (
         <div className="modal-backdrop" onClick={() => setIsModalOpen(false)}>
           <div className="modal-card" onClick={(event) => event.stopPropagation()}>
-            <div className="section-title">
-              <div className="stack" style={{ gap: "0.2rem" }}>
+            <div className="modal-panel__header">
+              <div className="modal-panel__header-copy">
                 <strong>Create job</strong>
                 <span className="text-muted">Choose a project, name the job, and continue directly into uploads.</span>
               </div>
-              <button className="icon-button" onClick={() => setIsModalOpen(false)}>
-                Close
+              <button className="icon-button icon-button-ghost" onClick={() => setIsModalOpen(false)} aria-label="Close create job panel" title="Close">
+                <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                  <path d="M6.7 5.3 12 10.6l5.3-5.3 1.4 1.4L13.4 12l5.3 5.3-1.4 1.4L12 13.4l-5.3 5.3-1.4-1.4L10.6 12 5.3 6.7l1.4-1.4Z" />
+                </svg>
               </button>
             </div>
 
-            <div className="form-grid">
-              <label className="field">
-                <span>Project</span>
-                <select value={form.projectId} onChange={(event) => setForm((current) => ({ ...current, projectId: event.target.value }))}>
-                  <option value="">Select project</option>
-                  {projects.map((project) => (
-                    <option key={project.id} value={project.id}>
-                      {project.name}
-                    </option>
+            <div className="modal-panel__body">
+              <div className="form-grid">
+                <label className="field">
+                  <span>Project</span>
+                  <select value={form.projectId} onChange={(event) => setForm((current) => ({ ...current, projectId: event.target.value }))}>
+                    <option value="">Select project</option>
+                    {projects.map((project) => (
+                      <option key={project.id} value={project.id}>
+                        {project.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="field field-wide">
+                  <span>Job name</span>
+                  <input
+                    autoFocus
+                    value={form.name}
+                    onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))}
+                    placeholder="South boundary traverse"
+                  />
+                </label>
+              </div>
+
+              <div className="stack" style={{ gap: "0.5rem" }}>
+                <span>Survey type</span>
+                <div className="chip-grid">
+                  {surveyTypes.map((type) => (
+                    <button
+                      key={type.value}
+                      type="button"
+                      className={`selection-chip${form.type === type.value ? " active" : ""}`}
+                      onClick={() => setForm((current) => ({ ...current, type: type.value }))}
+                    >
+                      <strong>{type.label}</strong>
+                      <span className="text-muted">{type.helper}</span>
+                    </button>
                   ))}
-                </select>
-              </label>
+                </div>
+              </div>
 
-              <label className="field field-wide">
-                <span>Job name</span>
-                <input
-                  autoFocus
-                  value={form.name}
-                  onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))}
-                  placeholder="South boundary traverse"
-                />
-              </label>
-            </div>
+              <div className="inline-note">
+                {selectedType?.helper} Next step after creation: upload survey files so processing can begin immediately.
+              </div>
 
-            <div className="stack" style={{ gap: "0.5rem" }}>
-              <span>Survey type</span>
-              <div className="chip-grid">
-                {surveyTypes.map((type) => (
-              <button
-                    key={type.value}
-                    type="button"
-                    className={`selection-chip${form.type === type.value ? " active" : ""}`}
-                    onClick={() => setForm((current) => ({ ...current, type: type.value }))}
-                  >
-                    <strong>{type.label}</strong>
-                    <span className="text-muted">{type.helper}</span>
+              {projects.length === 0 ? (
+                <div className="empty-panel compact-empty">
+                  <strong>Create a project first</strong>
+                  <span className="text-muted">Jobs can only be created inside a project. Create one now and we'll keep you in this flow.</span>
+                  <button className="button-primary" onClick={() => setIsCreateProjectOpen(true)}>
+                    Create project
                   </button>
-                ))}
-              </div>
+                </div>
+              ) : null}
+
+              {form.projectId ? (
+                <div className="stats-grid">
+                  <div className="stat-chip">
+                    <span className="text-muted">Selected project</span>
+                    <strong>{projectLookup.get(form.projectId) ?? "Unknown project"}</strong>
+                  </div>
+                  <div className="stat-chip">
+                    <span className="text-muted">Existing jobs in project</span>
+                    <strong>{projects.find((project) => project.id === form.projectId)?.surveyJobs?.length ?? 0}</strong>
+                  </div>
+                  <div className="stat-chip">
+                    <span className="text-muted">Next step after create</span>
+                    <strong>Upload files</strong>
+                  </div>
+                </div>
+              ) : null}
+
+              {createError ? <div className="error-text">{createError}</div> : null}
             </div>
 
-            <div className="inline-note">
-              {selectedType?.helper} Next step after creation: upload survey files so processing can begin immediately.
-            </div>
-
-            {projects.length === 0 ? (
-              <div className="empty-panel compact-empty">
-                <strong>Create a project first</strong>
-                <span className="text-muted">Jobs can only be created inside a project. Create one now and we'll keep you in this flow.</span>
-                <button className="button-primary" onClick={() => setIsCreateProjectOpen(true)}>
-                  Create project
-                </button>
-              </div>
-            ) : null}
-
-            {form.projectId ? (
-              <div className="stats-grid">
-                <div className="stat-chip">
-                  <span className="text-muted">Selected project</span>
-                  <strong>{projectLookup.get(form.projectId) ?? "Unknown project"}</strong>
-                </div>
-                <div className="stat-chip">
-                  <span className="text-muted">Existing jobs in project</span>
-                  <strong>{projects.find((project) => project.id === form.projectId)?.surveyJobs?.length ?? 0}</strong>
-                </div>
-                <div className="stat-chip">
-                  <span className="text-muted">Next step after create</span>
-                  <strong>Upload files</strong>
-                </div>
-              </div>
-            ) : null}
-
-            {createError ? <div className="error-text">{createError}</div> : null}
-
-            <div className="row" style={{ justifyContent: "flex-end" }}>
+            <div className="modal-panel__footer">
               <button className="button-secondary" onClick={() => setIsModalOpen(false)}>Cancel</button>
               <button
                 className="button-primary"

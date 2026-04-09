@@ -9,6 +9,7 @@ import { GnssImportPanel } from "../components/GnssImportPanel";
 import { MapView } from "../components/MapView";
 import { ProgressTracker } from "../components/ProgressTracker";
 import { EmptyState } from "../components/feedback/EmptyState";
+import { UploadHelpPanel } from "../components/help/UploadHelpPanel";
 import { SkeletonBlock } from "../components/feedback/SkeletonBlock";
 import { RightRailPanel } from "../components/shell/RightRailPanel";
 import { WorkflowStepper } from "../components/workflow/WorkflowStepper";
@@ -372,6 +373,8 @@ export function JobWorkspacePage() {
             <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-100 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-600">
               {job.status}
             </span>
+            <Link className="button-secondary" to="/help#workflow-guide">Show Me How</Link>
+            <Link className="button-secondary" to="/help#common-problems">Explain This Page</Link>
           </div>
         </div>
 
@@ -395,6 +398,14 @@ export function JobWorkspacePage() {
           {activeTab === "Upload" ? (
             <div className="space-y-6">
               <section className="reference-card space-y-4">
+                <UploadHelpPanel
+                  sampleLinks={[
+                    { label: "Sample GNSS CSV", href: "/samples/sample-gnss-points.csv" },
+                    { label: "Sample Guide", href: "/samples/README.txt" }
+                  ]}
+                  helpAnchor="/help#what-files-to-upload"
+                  demoQuery="/jobs?createJob=1&demoType=GNSS_TRAVERSE&demoName=Demo%20GNSS%20Land%20Survey"
+                />
                 <FileUploadZone
                   jobId={id}
                   onUploadComplete={() => void queryClient.invalidateQueries({ queryKey: ["job", id] })}
@@ -421,6 +432,7 @@ export function JobWorkspacePage() {
                     eyebrow="Upload"
                     title="No files uploaded yet"
                     description="Upload survey files to continue. Once valid files are attached, processing becomes available."
+                    action={<div className="reference-actions"><a className="button-secondary" href="/samples/sample-gnss-points.csv" download>Download Sample</a><Link className="button-secondary" to="/help#sample-files">Open Help</Link></div>}
                   />
                 ) : (
                   <div className="space-y-3">
