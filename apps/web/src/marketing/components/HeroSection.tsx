@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { getButtonClass } from "../../components/ui/Button";
 import { StaggerGroup } from "../../components/animation/StaggerGroup";
 import { trustMetrics } from "../data";
+import { AICommandBlock } from "./AICommandBlock";
+import { commandExamples } from "../siteContent";
 import { fadeUp, motionTokens } from "../../lib/motion";
 
 export function HeroSection() {
@@ -13,22 +15,24 @@ export function HeroSection() {
           <motion.span variants={fadeUp(12)} className="marketing-eyebrow">
             Built for modern survey operations
           </motion.span>
-          <motion.h1 variants={fadeUp(16)}>AI-powered land surveying, from raw data to trusted outputs in minutes.</motion.h1>
+          <motion.h1 variants={fadeUp(16)}>Run your entire survey workflow with AI.</motion.h1>
           <motion.p variants={fadeUp(18)}>
-            GeoSurvey AI helps survey teams upload field data, automate processing, detect issues earlier, and generate maps,
-            reports, and boundary outputs from one premium operational platform.
+            Just tell GeoSurvey AI what you need. It creates projects, sets up jobs, processes data, and delivers outputs automatically.
           </motion.p>
           <motion.div variants={fadeUp(14)} className="marketing-hero__actions">
             <motion.div whileHover={{ y: -2 }} whileTap={{ scale: motionTokens.scale.press }}>
               <Link className={getButtonClass("primary")} to="/sign-up">
-              Get Started
+              Start Free
               </Link>
             </motion.div>
             <motion.div whileHover={{ y: -2 }} whileTap={{ scale: motionTokens.scale.press }}>
-              <Link className={getButtonClass("secondary")} to="/contact">
-              Book Demo
+              <Link className={getButtonClass("secondary")} to="/demo">
+              Try AI Demo
               </Link>
             </motion.div>
+          </motion.div>
+          <motion.div variants={fadeUp(12)}>
+            <AICommandBlock example={commandExamples[0]} compact title="AI Command Example" />
           </motion.div>
           <motion.div variants={fadeUp(12)} className="marketing-hero__proof">
             <span>Trusted by survey firms, engineers, GIS leaders, and infrastructure teams.</span>

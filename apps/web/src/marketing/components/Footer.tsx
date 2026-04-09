@@ -18,21 +18,25 @@ export function Footer() {
         <div className="marketing-footer__links">
           <div>
             <span className="marketing-footer__heading">Product</span>
+            <Link to="/ai-command-center">AI Command Center</Link>
             <Link to="/product">Platform</Link>
             <Link to="/features">Features</Link>
             <Link to="/solutions">Solutions</Link>
             <Link to="/pricing">Pricing</Link>
+            <Link to="/demo">Try AI Demo</Link>
+          </div>
+          <div>
+            <span className="marketing-footer__heading">Resources</span>
             <Link to="/blog">Blog</Link>
+            <Link to="/resources">Resources</Link>
+            <Link to="/docs">Documentation</Link>
+            <Link to="/contact">Contact</Link>
           </div>
           <div>
             <span className="marketing-footer__heading">Company</span>
             <Link to="/about">About</Link>
-            <Link to="/contact">Contact</Link>
             <Link to="/sign-in">Sign In</Link>
-            <Link to="/sign-up">Get Started</Link>
-          </div>
-          <div>
-            <span className="marketing-footer__heading">Legal</span>
+            <Link to="/sign-up">Start Free</Link>
             <Link to="/privacy">Privacy</Link>
             <Link to="/terms">Terms</Link>
             <Link to="/security">Security</Link>

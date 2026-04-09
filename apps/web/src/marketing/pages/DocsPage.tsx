@@ -5,11 +5,20 @@ import { SectionContainer } from "../components/SectionContainer";
 import { docsSections } from "../data";
 
 export function DocsPage() {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    headline: "GeoSurvey AI Documentation",
+    description: "Documentation for getting started, file uploads, GNSS CSV imports, map review, AI-assisted QA, and report generation."
+  };
+
   return (
     <>
       <Seo
         title="Documentation | GeoSurvey AI Help for Uploads, GNSS Import, Review, and Reporting"
         description="Browse GeoSurvey AI documentation for getting started, file uploads, GNSS CSV imports, map review, AI-assisted QA, and report generation."
+        keywords="GeoSurvey AI docs, GNSS CSV import guide, survey upload help, map review documentation"
+        schema={schema}
       />
 
       <SectionContainer

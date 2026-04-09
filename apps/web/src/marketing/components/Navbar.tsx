@@ -5,11 +5,12 @@ import { getButtonClass } from "../../components/ui/Button";
 import { motionTokens, navReveal } from "../../lib/motion";
 
 const links = [
+  { to: "/ai-command-center", label: "AI Command" },
   { to: "/product", label: "Platform" },
   { to: "/features", label: "Features" },
   { to: "/solutions", label: "Solutions" },
   { to: "/pricing", label: "Pricing" },
-  { to: "/docs", label: "Docs" },
+  { to: "/resources", label: "Resources" },
   { to: "/blog", label: "Blog" },
   { to: "/about", label: "About" }
 ];
@@ -67,10 +68,10 @@ export function Navbar() {
             Sign In
           </Link>
           <Link className={getButtonClass("secondary")} to="/sign-up">
-            Get Started
+            Start Free
           </Link>
-          <Link className={getButtonClass("primary")} to="/contact">
-            Book Demo
+          <Link className={getButtonClass("primary")} to="/demo">
+            Try AI Demo
           </Link>
         </div>
       </div>
@@ -95,7 +96,7 @@ export function Navbar() {
                   Sign In
                 </Link>
                 <Link className={getButtonClass("primary", true)} to="/contact" onClick={() => setMobileOpen(false)}>
-                  Book Demo
+                  Try AI Demo
                 </Link>
               </div>
             </div>

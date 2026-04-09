@@ -8,11 +8,24 @@ import { Seo } from "../components/Seo";
 import { faqItems, featureComparisonRows, platformModules, supportedDataTypes, whyChooseUs } from "../data";
 
 export function ProductPage() {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "GeoSurvey AI Platform",
+    description: "Explore the GeoSurvey AI platform for survey jobs, GNSS imports, map review, AI insights, workflow tracking, and output generation.",
+    about: {
+      "@type": "SoftwareApplication",
+      name: "GeoSurvey AI"
+    }
+  };
+
   return (
     <>
       <Seo
         title="GeoSurvey AI Platform | Survey Workflow Software for GNSS, Review, and Reporting"
         description="Explore the GeoSurvey AI platform for survey jobs, GNSS imports, map review, AI insights, workflow tracking, and output generation."
+        keywords="survey workflow software, survey operations platform, GNSS workflow platform, survey reporting software"
+        schema={schema}
       />
 
       <SectionContainer

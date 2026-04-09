@@ -11,19 +11,61 @@ import { HeroSection } from "../components/HeroSection";
 import { Seo } from "../components/Seo";
 import { SectionContainer } from "../components/SectionContainer";
 import { TestimonialCard } from "../components/TestimonialCard";
+import { VisualCluster } from "../components/VisualCluster";
 import { aiInsightBullets, coreFeatures, faqItems, pricingTiers, testimonials, useCases, whyChooseUs } from "../data";
 import { PricingCard } from "../components/PricingCard";
 import { fadeUp } from "../../lib/motion";
+import { AICommandBlock } from "../components/AICommandBlock";
+import { commandExamples, featurePages, useCasePages } from "../siteContent";
 
 export function HomePage() {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "GeoSurvey AI",
+    applicationCategory: "BusinessApplication",
+    operatingSystem: "Web",
+    description:
+      "GeoSurvey AI helps survey teams upload data, automate processing, review work on maps, surface AI insights, and generate reports and outputs.",
+    offers: {
+      "@type": "Offer",
+      priceCurrency: "USD"
+    },
+    provider: {
+      "@type": "Organization",
+      name: "GeoSurvey AI",
+      url: "https://geosurvey.ai"
+    }
+  };
+
   return (
     <>
       <Seo
         title="GeoSurvey AI | AI Survey Software for GNSS, Mapping, and Workflow Review"
         description="GeoSurvey AI helps survey teams upload data, automate processing, review work on maps, surface AI insights, and generate reports and outputs."
+        keywords="AI survey software, survey automation software, GNSS processing software, map-based survey review, geospatial workflow platform"
+        schema={schema}
       />
 
       <HeroSection />
+
+      <SectionContainer eyebrow="AI Command Demo" title="Give one instruction. Let AI handle the setup." description="This is the clearest explanation of the product: the user describes the job and GeoSurvey AI handles the operational work.">
+        <div className="marketing-two-column">
+          <AICommandBlock example={commandExamples[0]} title="Type the instruction" />
+          <Card className="marketing-panel-card">
+            <span className="marketing-panel-card__label">Why this converts</span>
+            <ul className="marketing-list marketing-list--spacious">
+              <li>Visitors instantly understand the AI-first value proposition.</li>
+              <li>Operators see less manual setup work.</li>
+              <li>Buyers see workflow automation instead of just “AI” messaging.</li>
+            </ul>
+            <div className="marketing-inline-links">
+              <Link to="/ai-command-center">Open AI Command Center</Link>
+              <Link to="/demo">Try AI Demo</Link>
+            </div>
+          </Card>
+        </div>
+      </SectionContainer>
 
       <SectionContainer eyebrow="Used by modern survey teams" title="Designed to create trust before your buyer has to ask." description="Clear visibility, premium workflow design, and enterprise-ready structure help teams understand the value quickly.">
         <div className="marketing-logo-cloud">
@@ -36,7 +78,7 @@ export function HomePage() {
       </SectionContainer>
 
       <SectionContainer eyebrow="Problem to solution" title="Replace fragmented survey operations with one AI-powered workflow." description="The conversion goal here is simple: make a complex product feel immediately understandable and operationally credible.">
-        <div className="marketing-problem-solution">
+        <div className="marketing-problem-solution marketing-problem-solution--enhanced">
           <Card className="marketing-problem-card">
             <span className="marketing-pill marketing-pill--soft">Without GeoSurvey AI</span>
             <ul className="marketing-list marketing-list--spacious">
@@ -53,6 +95,7 @@ export function HomePage() {
               <li>Use real-time insights to catch issues earlier and deliver with confidence.</li>
             </ul>
           </Card>
+          <VisualCluster variant="workflow" />
         </div>
       </SectionContainer>
 
@@ -83,14 +126,21 @@ export function HomePage() {
 
       <SectionContainer eyebrow="Core features" title="Everything buyers need to understand the platform in one scan." description="Shorter copy, clearer grouping, and stronger visual rhythm keep the page easy to navigate while still covering the product breadth.">
         <StaggerGroup className="marketing-feature-grid">
-          {coreFeatures.map((feature) => (
-            <FeatureCard key={feature.title} {...feature} />
-          ))}
+          {coreFeatures.map((feature) => {
+            const detail = featurePages.find((item) => item.title === feature.title);
+            return detail ? (
+              <Link key={feature.title} to={`/features/${detail.slug}`} className="marketing-card-link">
+                <FeatureCard {...feature} />
+              </Link>
+            ) : (
+              <FeatureCard key={feature.title} {...feature} />
+            );
+          })}
         </StaggerGroup>
       </SectionContainer>
 
       <SectionContainer eyebrow="How it works" title="Three steps from raw survey data to usable outputs." align="center">
-        <div className="marketing-steps">
+        <div className="marketing-steps marketing-steps--connected">
           <Card className="marketing-step-card">
             <span className="marketing-step-card__index">1</span>
             <strong>Upload data</strong>
@@ -111,12 +161,17 @@ export function HomePage() {
 
       <SectionContainer eyebrow="Use cases" title="Made for the teams that manage real survey complexity." description="The page speaks directly to the buying groups most likely to convert.">
         <StaggerGroup className="marketing-use-case-grid">
-          {useCases.map((useCase) => (
-            <Card key={useCase.title} className="marketing-use-case-card">
+          {useCases.map((useCase) => {
+            const detail = useCasePages.find((item) => item.title === useCase.title);
+            return (
+            <Link key={useCase.title} to={detail ? `/use-cases/${detail.slug}` : "/solutions"} className="marketing-card-link">
+            <Card className="marketing-use-case-card">
               <h3>{useCase.title}</h3>
               <p>{useCase.description}</p>
             </Card>
-          ))}
+            </Link>
+          );
+          })}
         </StaggerGroup>
       </SectionContainer>
 
@@ -145,10 +200,13 @@ export function HomePage() {
             </Card>
           </Reveal>
           <Reveal>
-            <Card className="marketing-panel-card">
-              <span className="marketing-panel-card__label">How it builds trust</span>
-              <p>The system helps teams prioritize likely issues earlier, but operators still control review, decisions, and final delivery. That keeps the product credible for serious survey work.</p>
-            </Card>
+            <div className="marketing-signal-stack">
+              <Card className="marketing-panel-card">
+                <span className="marketing-panel-card__label">How it builds trust</span>
+                <p>The system helps teams prioritize likely issues earlier, but operators still control review, decisions, and final delivery. That keeps the product credible for serious survey work.</p>
+              </Card>
+              <VisualCluster variant="signals" />
+            </div>
           </Reveal>
         </div>
       </SectionContainer>

@@ -1,30 +1,41 @@
 import { SignIn, SignUp, useAuth } from "@clerk/clerk-react";
-import type { ReactNode } from "react";
+import { Suspense, lazy, type ReactNode } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { Layout } from "./components/Layout";
-import { MarketingLayout } from "./marketing/components/MarketingLayout";
-import { AboutPage } from "./marketing/pages/AboutPage";
-import { BlogPage } from "./marketing/pages/BlogPage";
-import { ContactPage } from "./marketing/pages/ContactPage";
-import { DocsPage } from "./marketing/pages/DocsPage";
-import { FeaturesPage } from "./marketing/pages/FeaturesPage";
-import { HomePage } from "./marketing/pages/HomePage";
-import { LegalPage } from "./marketing/pages/LegalPage";
-import { NotFoundPage } from "./marketing/pages/NotFoundPage";
-import { PricingPage } from "./marketing/pages/PricingPage";
-import { ProductPage } from "./marketing/pages/ProductPage";
-import { SolutionsPage } from "./marketing/pages/SolutionsPage";
-import { AiWorkspaceHubPage } from "./pages/AiWorkspaceHubPage";
-import { Dashboard } from "./pages/Dashboard";
-import { GnssProcessor } from "./pages/GnssProcessor";
-import { HelpPage } from "./pages/Help";
-import { JobList } from "./pages/JobList";
-import { JobWorkspacePage } from "./pages/JobWorkspacePage";
-import { ProcessingPage } from "./pages/ProcessingPage";
-import { PointCloudViewer } from "./pages/PointCloudViewer";
-import { ProjectsPage } from "./pages/ProjectsPage";
-import { ReportsPage } from "./pages/ReportsPage";
-import { SettingsPage } from "./pages/SettingsPage";
+
+const MarketingLayout = lazy(async () => ({ default: (await import("./marketing/components/MarketingLayout")).MarketingLayout }));
+const HomePage = lazy(async () => ({ default: (await import("./marketing/pages/HomePage")).HomePage }));
+const ProductPage = lazy(async () => ({ default: (await import("./marketing/pages/ProductPage")).ProductPage }));
+const FeaturesPage = lazy(async () => ({ default: (await import("./marketing/pages/FeaturesPage")).FeaturesPage }));
+const SolutionsPage = lazy(async () => ({ default: (await import("./marketing/pages/SolutionsPage")).SolutionsPage }));
+const PricingPage = lazy(async () => ({ default: (await import("./marketing/pages/PricingPage")).PricingPage }));
+const AboutPage = lazy(async () => ({ default: (await import("./marketing/pages/AboutPage")).AboutPage }));
+const ContactPage = lazy(async () => ({ default: (await import("./marketing/pages/ContactPage")).ContactPage }));
+const BlogPage = lazy(async () => ({ default: (await import("./marketing/pages/BlogPage")).BlogPage }));
+const BlogCategoryPage = lazy(async () => ({ default: (await import("./marketing/pages/BlogCategoryPage")).BlogCategoryPage }));
+const BlogDetailPage = lazy(async () => ({ default: (await import("./marketing/pages/BlogDetailPage")).BlogDetailPage }));
+const DocsPage = lazy(async () => ({ default: (await import("./marketing/pages/DocsPage")).DocsPage }));
+const AICommandCenterPage = lazy(async () => ({ default: (await import("./marketing/pages/AICommandCenterPage")).AICommandCenterPage }));
+const DemoPage = lazy(async () => ({ default: (await import("./marketing/pages/DemoPage")).DemoPage }));
+const FeatureDetailPage = lazy(async () => ({ default: (await import("./marketing/pages/FeatureDetailPage")).FeatureDetailPage }));
+const UseCaseDetailPage = lazy(async () => ({ default: (await import("./marketing/pages/UseCaseDetailPage")).UseCaseDetailPage }));
+const LegalPage = lazy(async () => ({ default: (await import("./marketing/pages/LegalPage")).LegalPage }));
+const NotFoundPage = lazy(async () => ({ default: (await import("./marketing/pages/NotFoundPage")).NotFoundPage }));
+const Dashboard = lazy(async () => ({ default: (await import("./pages/Dashboard")).Dashboard }));
+const AiWorkspaceHubPage = lazy(async () => ({ default: (await import("./pages/AiWorkspaceHubPage")).AiWorkspaceHubPage }));
+const ProjectsPage = lazy(async () => ({ default: (await import("./pages/ProjectsPage")).ProjectsPage }));
+const JobList = lazy(async () => ({ default: (await import("./pages/JobList")).JobList }));
+const JobWorkspacePage = lazy(async () => ({ default: (await import("./pages/JobWorkspacePage")).JobWorkspacePage }));
+const ProcessingPage = lazy(async () => ({ default: (await import("./pages/ProcessingPage")).ProcessingPage }));
+const GnssProcessor = lazy(async () => ({ default: (await import("./pages/GnssProcessor")).GnssProcessor }));
+const HelpPage = lazy(async () => ({ default: (await import("./pages/Help")).HelpPage }));
+const PointCloudViewer = lazy(async () => ({ default: (await import("./pages/PointCloudViewer")).PointCloudViewer }));
+const ReportsPage = lazy(async () => ({ default: (await import("./pages/ReportsPage")).ReportsPage }));
+const SettingsPage = lazy(async () => ({ default: (await import("./pages/SettingsPage")).SettingsPage }));
+
+function RouteFallback() {
+  return <div className="marketing-route-fallback" aria-hidden="true" />;
+}
 
 const clerkAppearance = {
   variables: {
@@ -206,67 +217,75 @@ export default function App() {
   const authEnabled = Boolean(import.meta.env.VITE_CLERK_PUBLISHABLE_KEY) && !authDisabled;
 
   return (
-    <Routes>
-      <Route element={<MarketingLayout />}>
+    <Suspense fallback={<RouteFallback />}>
+      <Routes>
+        <Route element={<MarketingLayout />}>
         <Route path="/" element={<HomePage />} />
+        <Route path="/ai-command-center" element={<AICommandCenterPage />} />
+        <Route path="/demo" element={<DemoPage />} />
         <Route path="/product" element={<ProductPage />} />
         <Route path="/features" element={<FeaturesPage />} />
+        <Route path="/features/:slug" element={<FeatureDetailPage />} />
         <Route path="/solutions" element={<SolutionsPage />} />
+        <Route path="/use-cases/:slug" element={<UseCaseDetailPage />} />
         <Route path="/pricing" element={<PricingPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/blog" element={<BlogPage />} />
+        <Route path="/blog/category/:slug" element={<BlogCategoryPage />} />
+        <Route path="/blog/:slug" element={<BlogDetailPage />} />
         <Route path="/resources" element={<BlogPage />} />
         <Route path="/docs" element={<DocsPage />} />
-        <Route
-          path="/privacy"
-          element={
-            <LegalPage
-              kind="privacy"
-              title="Privacy Policy"
-              description="Learn how GeoSurvey AI approaches privacy, data handling, and evaluation-stage information practices."
-            />
-          }
-        />
-        <Route
-          path="/terms"
-          element={
-            <LegalPage
-              kind="terms"
-              title="Terms of Service"
-              description="Review the GeoSurvey AI terms of service for product evaluation, subscriptions, and platform usage."
-            />
-          }
-        />
-        <Route
-          path="/security"
-          element={
-            <LegalPage
-              kind="security"
-              title="Security"
-              description="Explore the GeoSurvey AI security page for access control, operational trust, and enterprise readiness."
-            />
-          }
-        />
-      </Route>
-      <Route path="/sign-in" element={authEnabled ? <SignInRoute /> : <DevAuthPage title="Sign in" />} />
-      <Route path="/sign-up" element={authEnabled ? <SignUpRoute /> : <DevAuthPage title="Sign up" />} />
-      <Route path="/" element={authEnabled ? <AuthGuardRoute /> : <Layout />}>
-        <Route path="dashboard" element={<Dashboard />} />
-        <Route path="ai" element={<AiWorkspaceHubPage />} />
-        <Route path="projects" element={<ProjectsPage />} />
-        <Route path="jobs" element={<JobList />} />
-        <Route path="jobs/:id" element={<JobWorkspacePage />} />
-        <Route path="processing" element={<ProcessingPage />} />
-        <Route path="gnss" element={<GnssProcessor />} />
-        <Route path="help" element={<HelpPage />} />
-        <Route path="viewer/:id" element={<PointCloudViewer />} />
-        <Route path="reports" element={<ReportsPage />} />
-        <Route path="settings" element={<SettingsPage />} />
-      </Route>
-      <Route element={<MarketingLayout />}>
-        <Route path="*" element={<NotFoundPage />} />
-      </Route>
-    </Routes>
+          <Route
+            path="/privacy"
+            element={
+              <LegalPage
+                kind="privacy"
+                title="Privacy Policy"
+                description="Learn how GeoSurvey AI approaches privacy, data handling, and evaluation-stage information practices."
+              />
+            }
+          />
+          <Route
+            path="/terms"
+            element={
+              <LegalPage
+                kind="terms"
+                title="Terms of Service"
+                description="Review the GeoSurvey AI terms of service for product evaluation, subscriptions, and platform usage."
+              />
+            }
+          />
+          <Route
+            path="/security"
+            element={
+              <LegalPage
+                kind="security"
+                title="Security"
+                description="Explore the GeoSurvey AI security page for access control, operational trust, and enterprise readiness."
+              />
+            }
+          />
+        </Route>
+        <Route path="/sign-in" element={authEnabled ? <SignInRoute /> : <DevAuthPage title="Sign in" />} />
+        <Route path="/sign-up" element={authEnabled ? <SignUpRoute /> : <DevAuthPage title="Sign up" />} />
+        <Route path="/" element={authEnabled ? <AuthGuardRoute /> : <Layout />}>
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="ai" element={<AiWorkspaceHubPage />} />
+          <Route path="projects" element={<ProjectsPage />} />
+          <Route path="jobs" element={<JobList />} />
+          <Route path="jobs/:id" element={<JobWorkspacePage />} />
+          <Route path="processing" element={<ProcessingPage />} />
+          <Route path="gnss" element={<GnssProcessor />} />
+          <Route path="help" element={<HelpPage />} />
+          <Route path="viewer/:id" element={<PointCloudViewer />} />
+          <Route path="reports" element={<ReportsPage />} />
+          <Route path="settings" element={<SettingsPage />} />
+        </Route>
+        <Route element={<MarketingLayout />}>
+          <Route path="*" element={<NotFoundPage />} />
+        </Route>
+      </Routes>
+    </Suspense>
   );
 }

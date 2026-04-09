@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Seo } from "../components/Seo";
 import { CTASection } from "../components/CTASection";
 import { FeatureCard } from "../components/FeatureCard";
@@ -5,6 +6,7 @@ import { SectionContainer } from "../components/SectionContainer";
 import { StaggerGroup } from "../../components/animation/StaggerGroup";
 import { coreFeatures, detailedFeatures } from "../data";
 import { Card } from "../../components/ui/Card";
+import { featurePages } from "../siteContent";
 
 export function FeaturesPage() {
   return (
@@ -15,21 +17,32 @@ export function FeaturesPage() {
       />
       <SectionContainer eyebrow="Features" title="A clearer operating system for modern survey delivery." description="Every feature is organized around speed, visibility, and trust so buyers can understand where the value shows up.">
         <StaggerGroup className="marketing-feature-grid">
-          {coreFeatures.map((feature) => (
-            <FeatureCard key={feature.title} {...feature} />
-          ))}
+          {coreFeatures.map((feature) => {
+            const detail = featurePages.find((item) => item.title === feature.title);
+            return detail ? (
+              <Link key={feature.title} to={`/features/${detail.slug}`} className="marketing-card-link">
+                <FeatureCard {...feature} />
+              </Link>
+            ) : (
+              <FeatureCard key={feature.title} {...feature} />
+            );
+          })}
         </StaggerGroup>
       </SectionContainer>
       <SectionContainer eyebrow="Feature depth" title="Each capability removes a specific operational bottleneck." description="Feature detail matters in this category because buyers need to see workflow fit, not just high-level categories.">
         <div className="marketing-feature-detail-list">
-          {detailedFeatures.map((feature) => (
+          {detailedFeatures.map((feature) => {
+            const detail = featurePages.find((item) => item.title === feature.title);
+            return (
             <Card key={feature.title} className="marketing-panel-card">
               <span className="marketing-panel-card__label">{feature.title}</span>
               <p>{feature.description}</p>
               <p><strong>Business value:</strong> {feature.value}</p>
               <p><strong>Objection removed:</strong> {feature.objection}</p>
+              {detail ? <Link className="marketing-inline-link" to={`/features/${detail.slug}`}>Try this feature</Link> : null}
             </Card>
-          ))}
+          );
+          })}
         </div>
       </SectionContainer>
       <CTASection />

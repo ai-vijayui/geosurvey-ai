@@ -1,5 +1,6 @@
 import type { PropsWithChildren, ReactNode } from "react";
 import { Reveal } from "../../components/animation/Reveal";
+import { SectionFlowLinks } from "./SectionFlowLinks";
 
 type SectionContainerProps = PropsWithChildren<{
   eyebrow?: string;
@@ -8,6 +9,7 @@ type SectionContainerProps = PropsWithChildren<{
   align?: "left" | "center";
   actions?: ReactNode;
   className?: string;
+  showFlowLinks?: boolean;
 }>;
 
 export function SectionContainer({
@@ -17,6 +19,7 @@ export function SectionContainer({
   align = "left",
   actions,
   className,
+  showFlowLinks = true,
   children
 }: SectionContainerProps) {
   return (
@@ -33,6 +36,7 @@ export function SectionContainer({
           </Reveal>
         ) : null}
         {children}
+        {showFlowLinks ? <SectionFlowLinks /> : null}
       </div>
     </section>
   );

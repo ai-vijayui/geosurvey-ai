@@ -5,6 +5,7 @@ import { CTASection } from "../components/CTASection";
 import { Seo } from "../components/Seo";
 import { SectionContainer } from "../components/SectionContainer";
 import { useCases } from "../data";
+import { useCasePages } from "../siteContent";
 
 export function SolutionsPage() {
   return (
@@ -30,15 +31,18 @@ export function SolutionsPage() {
         }
       >
         <div className="marketing-use-case-grid">
-          {useCases.map((useCase) => (
+          {useCases.map((useCase) => {
+            const detail = useCasePages.find((item) => item.title === useCase.title);
+            return (
             <Card key={useCase.title} className="marketing-use-case-card">
               <h3>{useCase.title}</h3>
               <p>{useCase.description}</p>
-              <Link className="marketing-inline-link" to="/contact">
-                See this workflow
+              <Link className="marketing-inline-link" to={detail ? `/use-cases/${detail.slug}` : "/contact"}>
+                Start with AI
               </Link>
             </Card>
-          ))}
+          );
+          })}
         </div>
       </SectionContainer>
 
