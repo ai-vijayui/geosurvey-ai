@@ -1,17 +1,28 @@
 import { Link } from "react-router-dom";
+import { motion } from "motion/react";
 import { Card } from "../../components/ui/Card";
 import { getButtonClass } from "../../components/ui/Button";
+import { Reveal } from "../../components/animation/Reveal";
+import { StaggerGroup } from "../../components/animation/StaggerGroup";
 import { CTASection } from "../components/CTASection";
+import { FaqSection } from "../components/FaqSection";
 import { FeatureCard } from "../components/FeatureCard";
 import { HeroSection } from "../components/HeroSection";
+import { Seo } from "../components/Seo";
 import { SectionContainer } from "../components/SectionContainer";
 import { TestimonialCard } from "../components/TestimonialCard";
-import { coreFeatures, pricingTiers, testimonials, useCases } from "../data";
+import { aiInsightBullets, coreFeatures, faqItems, pricingTiers, testimonials, useCases, whyChooseUs } from "../data";
 import { PricingCard } from "../components/PricingCard";
+import { fadeUp } from "../../lib/motion";
 
 export function HomePage() {
   return (
     <>
+      <Seo
+        title="GeoSurvey AI | AI Survey Software for GNSS, Mapping, and Workflow Review"
+        description="GeoSurvey AI helps survey teams upload data, automate processing, review work on maps, surface AI insights, and generate reports and outputs."
+      />
+
       <HeroSection />
 
       <SectionContainer eyebrow="Used by modern survey teams" title="Designed to create trust before your buyer has to ask." description="Clear visibility, premium workflow design, and enterprise-ready structure help teams understand the value quickly.">
@@ -46,7 +57,7 @@ export function HomePage() {
       </SectionContainer>
 
       <SectionContainer eyebrow="Product preview" title="A premium workspace for survey teams, not another pile of tools." description="Every interaction is designed to reduce cognitive load, increase confidence, and keep buyers focused on outcomes.">
-        <div className="marketing-preview-panels">
+        <StaggerGroup className="marketing-preview-panels">
           <Card className="marketing-preview-panel">
             <span className="marketing-preview-panel__label">Dashboard</span>
             <strong>Portfolio visibility across active jobs</strong>
@@ -67,15 +78,15 @@ export function HomePage() {
             <strong>Recommendations that shorten QA cycles</strong>
             <p>Surface anomalies, overlaps, and processing risks before they turn into downstream delivery issues.</p>
           </Card>
-        </div>
+        </StaggerGroup>
       </SectionContainer>
 
       <SectionContainer eyebrow="Core features" title="Everything buyers need to understand the platform in one scan." description="Shorter copy, clearer grouping, and stronger visual rhythm keep the page easy to navigate while still covering the product breadth.">
-        <div className="marketing-feature-grid">
+        <StaggerGroup className="marketing-feature-grid">
           {coreFeatures.map((feature) => (
             <FeatureCard key={feature.title} {...feature} />
           ))}
-        </div>
+        </StaggerGroup>
       </SectionContainer>
 
       <SectionContainer eyebrow="How it works" title="Three steps from raw survey data to usable outputs." align="center">
@@ -99,22 +110,55 @@ export function HomePage() {
       </SectionContainer>
 
       <SectionContainer eyebrow="Use cases" title="Made for the teams that manage real survey complexity." description="The page speaks directly to the buying groups most likely to convert.">
-        <div className="marketing-use-case-grid">
+        <StaggerGroup className="marketing-use-case-grid">
           {useCases.map((useCase) => (
             <Card key={useCase.title} className="marketing-use-case-card">
               <h3>{useCase.title}</h3>
               <p>{useCase.description}</p>
             </Card>
           ))}
+        </StaggerGroup>
+      </SectionContainer>
+
+      <SectionContainer eyebrow="Why GeoSurvey AI" title="Clearer operations, better review signals, and less workflow drag." description="This section exists to remove the final layer of uncertainty for buyers comparing GeoSurvey AI to fragmented stacks or generic tools.">
+        <StaggerGroup className="marketing-why-grid">
+          {whyChooseUs.map((item) => (
+            <Card key={item} className="marketing-why-card">
+              <strong>{item}</strong>
+            </Card>
+          ))}
+        </StaggerGroup>
+      </SectionContainer>
+
+      <SectionContainer eyebrow="Workflow intelligence" title="AI that supports review quality and delivery confidence." description="The AI story is strongest when it is grounded in practical operational outcomes rather than hype.">
+        <div className="marketing-two-column">
+          <Reveal>
+            <Card className="marketing-panel-card">
+              <span className="marketing-panel-card__label">What the AI helps with</span>
+              <StaggerGroup className="marketing-list marketing-list--spacious">
+                {aiInsightBullets.map((item) => (
+                  <motion.li key={item} variants={fadeUp(8)}>
+                    {item}
+                  </motion.li>
+                ))}
+              </StaggerGroup>
+            </Card>
+          </Reveal>
+          <Reveal>
+            <Card className="marketing-panel-card">
+              <span className="marketing-panel-card__label">How it builds trust</span>
+              <p>The system helps teams prioritize likely issues earlier, but operators still control review, decisions, and final delivery. That keeps the product credible for serious survey work.</p>
+            </Card>
+          </Reveal>
         </div>
       </SectionContainer>
 
       <SectionContainer eyebrow="Customer proof" title="Teams adopt GeoSurvey AI because it makes complex work easier to trust." description="Social proof is placed after the workflow sections so buyers have context before reading the outcomes.">
-        <div className="marketing-testimonial-grid">
+        <StaggerGroup className="marketing-testimonial-grid">
           {testimonials.map((testimonial) => (
             <TestimonialCard key={testimonial.name} {...testimonial} />
           ))}
-        </div>
+        </StaggerGroup>
       </SectionContainer>
 
       <SectionContainer
@@ -123,13 +167,14 @@ export function HomePage() {
         description="Reduce friction by showing a clear entry path while preserving a demo-led motion for larger teams."
         actions={<Link className={getButtonClass("secondary")} to="/pricing">View full pricing</Link>}
       >
-        <div className="marketing-pricing-grid">
+        <StaggerGroup className="marketing-pricing-grid">
           {pricingTiers.map((tier) => (
             <PricingCard key={tier.name} {...tier} />
           ))}
-        </div>
+        </StaggerGroup>
       </SectionContainer>
 
+      <FaqSection items={faqItems} />
       <CTASection />
     </>
   );

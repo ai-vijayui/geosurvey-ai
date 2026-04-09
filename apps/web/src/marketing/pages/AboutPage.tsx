@@ -1,10 +1,15 @@
 import { Card } from "../../components/ui/Card";
 import { CTASection } from "../components/CTASection";
+import { Seo } from "../components/Seo";
 import { SectionContainer } from "../components/SectionContainer";
 
 export function AboutPage() {
   return (
     <>
+      <Seo
+        title="About | GeoSurvey AI"
+        description="Learn why GeoSurvey AI is focused on modernizing survey workflows from data intake to map review, reporting, and delivery."
+      />
       <SectionContainer eyebrow="About" title="Built to modernize the way survey teams move from field capture to final output." description="GeoSurvey AI is designed for operators who need trust, speed, and fewer handoffs across the survey lifecycle.">
         <div className="marketing-two-column">
           <Card>

@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
+import { Reveal } from "../../components/animation/Reveal";
 
 export function Footer() {
   return (
     <footer className="marketing-footer">
-      <div className="marketing-shell marketing-footer__grid">
+      <Reveal className="marketing-shell marketing-footer__grid">
         <div className="marketing-footer__brand">
           <Link to="/" className="marketing-logo">
             <span className="marketing-logo__mark">GS</span>
@@ -17,7 +18,9 @@ export function Footer() {
         <div className="marketing-footer__links">
           <div>
             <span className="marketing-footer__heading">Product</span>
+            <Link to="/product">Platform</Link>
             <Link to="/features">Features</Link>
+            <Link to="/solutions">Solutions</Link>
             <Link to="/pricing">Pricing</Link>
             <Link to="/blog">Blog</Link>
           </div>
@@ -30,12 +33,13 @@ export function Footer() {
           </div>
           <div>
             <span className="marketing-footer__heading">Legal</span>
-            <a href="#">Privacy</a>
-            <a href="#">Terms</a>
+            <Link to="/privacy">Privacy</Link>
+            <Link to="/terms">Terms</Link>
+            <Link to="/security">Security</Link>
             <a href="mailto:hello@geosurvey.ai">hello@geosurvey.ai</a>
           </div>
         </div>
-      </div>
+      </Reveal>
     </footer>
   );
 }

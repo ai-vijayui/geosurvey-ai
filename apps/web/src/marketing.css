@@ -68,6 +68,29 @@
   gap: 10px;
 }
 
+.marketing-navbar__toggle {
+  display: none;
+  width: 42px;
+  min-width: 42px;
+  height: 42px;
+  padding: 0;
+  border-radius: 12px;
+  border: 1px solid var(--border-subtle);
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.marketing-navbar__toggle span {
+  display: block;
+  width: 15px;
+  height: 1.5px;
+  border-radius: 999px;
+  background: var(--text-primary);
+}
+
+.marketing-mobile-nav {
+  display: none;
+}
+
 .marketing-navbar__link {
   display: inline-flex;
   align-items: center;
@@ -521,6 +544,160 @@
   gap: 14px;
 }
 
+.marketing-chip-grid,
+.marketing-module-grid,
+.marketing-docs-grid,
+.marketing-why-grid,
+.marketing-feature-detail-list,
+.marketing-faq-list {
+  display: grid;
+  gap: 18px;
+}
+
+.marketing-chip-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.marketing-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border-subtle);
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+}
+
+.marketing-module-grid,
+.marketing-docs-grid,
+.marketing-why-grid,
+.marketing-faq-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.marketing-feature-detail-list {
+  grid-template-columns: 1fr;
+}
+
+.marketing-panel-card {
+  display: grid;
+  gap: 14px;
+}
+
+.marketing-panel-card__label {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  line-height: 1.2;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.marketing-why-card {
+  display: grid;
+  min-height: 120px;
+  align-content: center;
+}
+
+.marketing-inline-link {
+  color: var(--accent-strong);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.marketing-inline-link:hover {
+  color: var(--accent);
+}
+
+.marketing-comparison-table {
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.86);
+}
+
+.marketing-comparison-table__header,
+.marketing-comparison-table__row {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr;
+  gap: 16px;
+  padding: 16px 18px;
+}
+
+.marketing-comparison-table__header {
+  background: rgba(251, 248, 247, 0.94);
+  color: var(--text-muted);
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.marketing-comparison-table__row {
+  border-top: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.marketing-comparison-table__row strong {
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+.marketing-faq-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.marketing-faq-card__trigger {
+  width: 100%;
+  min-height: 0;
+  padding: 22px;
+  border: 0;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  text-align: left;
+}
+
+.marketing-faq-card__trigger:hover {
+  background: rgba(251, 248, 247, 0.7);
+}
+
+.marketing-faq-card__trigger h3 {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.45;
+}
+
+.marketing-faq-card__icon {
+  color: var(--text-muted);
+  font-size: 1.2rem;
+  font-weight: 500;
+  transition: transform 180ms ease;
+}
+
+.marketing-faq-card__icon.is-open {
+  transform: rotate(45deg);
+}
+
+.marketing-faq-card__body {
+  overflow: hidden;
+}
+
+.marketing-faq-card__body p {
+  padding: 0 22px 22px;
+}
+
+.marketing-legal-copy {
+  display: grid;
+  gap: 16px;
+  max-width: 760px;
+}
+
 .marketing-feature-card,
 .marketing-use-case-card,
 .marketing-preview-panel,
@@ -687,7 +864,11 @@
   .marketing-testimonial-grid,
   .marketing-pricing-grid,
   .marketing-blog-list,
-  .marketing-logo-cloud {
+  .marketing-logo-cloud,
+  .marketing-module-grid,
+  .marketing-docs-grid,
+  .marketing-why-grid,
+  .marketing-faq-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -703,16 +884,46 @@
   }
 
   .marketing-navbar__inner,
-  .marketing-navbar__nav,
   .marketing-navbar__actions {
     flex-wrap: wrap;
   }
 
   .marketing-navbar__nav {
-    order: 3;
-    width: 100%;
-    justify-content: center;
-    padding-bottom: 10px;
+    display: none;
+  }
+
+  .marketing-navbar__actions > a {
+    display: none;
+  }
+
+  .marketing-navbar__toggle {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .marketing-mobile-nav {
+    display: block;
+    border-top: 1px solid rgba(231, 223, 220, 0.8);
+    background: rgba(251, 248, 247, 0.96);
+  }
+
+  .marketing-mobile-nav__inner,
+  .marketing-mobile-nav__actions {
+    display: grid;
+    gap: 10px;
+  }
+
+  .marketing-mobile-nav__inner {
+    padding: 12px 0 18px;
+  }
+
+  .marketing-mobile-nav__link {
+    display: inline-flex;
+    min-height: 42px;
+    align-items: center;
+    padding: 0 4px;
+    color: var(--text-secondary);
   }
 
   .marketing-hero {
@@ -733,7 +944,12 @@
   .marketing-blog-list,
   .marketing-steps,
   .marketing-logo-cloud,
-  .marketing-metric-row {
+  .marketing-metric-row,
+  .marketing-module-grid,
+  .marketing-docs-grid,
+  .marketing-why-grid,
+  .marketing-faq-list,
+  .marketing-chip-grid {
     grid-template-columns: 1fr;
   }
 
@@ -764,6 +980,11 @@
   }
 
   .marketing-footer__links {
+    grid-template-columns: 1fr;
+  }
+
+  .marketing-comparison-table__header,
+  .marketing-comparison-table__row {
     grid-template-columns: 1fr;
   }
 }

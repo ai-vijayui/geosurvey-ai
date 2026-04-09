@@ -1,4 +1,5 @@
 import type { PropsWithChildren, ReactNode } from "react";
+import { Reveal } from "../../components/animation/Reveal";
 
 type SectionContainerProps = PropsWithChildren<{
   eyebrow?: string;
@@ -22,14 +23,14 @@ export function SectionContainer({
     <section className={`marketing-section ${className ?? ""}`.trim()}>
       <div className="marketing-shell">
         {eyebrow || title || description || actions ? (
-          <div className={`marketing-section__header marketing-section__header--${align}`}>
+          <Reveal className={`marketing-section__header marketing-section__header--${align}`}>
             <div className="marketing-section__copy">
               {eyebrow ? <span className="marketing-eyebrow">{eyebrow}</span> : null}
               {title ? <h2>{title}</h2> : null}
               {description ? <p>{description}</p> : null}
             </div>
             {actions ? <div className="marketing-section__actions">{actions}</div> : null}
-          </div>
+          </Reveal>
         ) : null}
         {children}
       </div>

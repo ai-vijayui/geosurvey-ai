@@ -1,9 +1,15 @@
 import { Card } from "../../components/ui/Card";
+import { Seo } from "../components/Seo";
 import { SectionContainer } from "../components/SectionContainer";
 
 export function ContactPage() {
   return (
-    <SectionContainer eyebrow="Contact" title="Talk to the team behind GeoSurvey AI." description="Use this page as the conversion point for buyers who want a guided walkthrough, enterprise pricing, or rollout support.">
+    <>
+      <Seo
+        title="Contact | Book a GeoSurvey AI Demo"
+        description="Talk to the GeoSurvey AI team about survey workflows, pricing, demos, enterprise rollout, and implementation support."
+      />
+      <SectionContainer eyebrow="Contact" title="Talk to the team behind GeoSurvey AI." description="Use this page as the conversion point for buyers who want a guided walkthrough, enterprise pricing, or rollout support.">
       <div className="marketing-two-column">
         <Card>
           <h3>Book a demo</h3>
@@ -36,6 +42,7 @@ export function ContactPage() {
           </button>
         </Card>
       </div>
-    </SectionContainer>
+      </SectionContainer>
+    </>
   );
 }

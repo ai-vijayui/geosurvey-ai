@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
+import { motion } from "motion/react";
 import { Card } from "../../components/ui/Card";
 import { getButtonClass } from "../../components/ui/Button";
+import { motionTokens } from "../../lib/motion";
 
 type PricingCardProps = {
   name: string;
@@ -13,7 +15,8 @@ type PricingCardProps = {
 
 export function PricingCard({ name, price, description, cta, highlighted, features }: PricingCardProps) {
   return (
-    <Card className={`marketing-pricing-card${highlighted ? " marketing-pricing-card--highlighted" : ""}`}>
+    <motion.div whileHover={{ y: -6, scale: highlighted ? 1.01 : motionTokens.scale.hover }} transition={{ duration: motionTokens.duration.fast }}>
+      <Card className={`marketing-pricing-card${highlighted ? " marketing-pricing-card--highlighted" : ""}`}>
       <div className="marketing-pricing-card__header">
         <div>
           <h3>{name}</h3>
@@ -33,6 +36,7 @@ export function PricingCard({ name, price, description, cta, highlighted, featur
       <Link className={getButtonClass(highlighted ? "primary" : "secondary", true)} to={cta === "Book Demo" ? "/contact" : "/sign-up"}>
         {cta}
       </Link>
-    </Card>
+      </Card>
+    </motion.div>
   );
 }

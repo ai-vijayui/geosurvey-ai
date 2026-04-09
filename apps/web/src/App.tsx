@@ -6,10 +6,14 @@ import { MarketingLayout } from "./marketing/components/MarketingLayout";
 import { AboutPage } from "./marketing/pages/AboutPage";
 import { BlogPage } from "./marketing/pages/BlogPage";
 import { ContactPage } from "./marketing/pages/ContactPage";
+import { DocsPage } from "./marketing/pages/DocsPage";
 import { FeaturesPage } from "./marketing/pages/FeaturesPage";
 import { HomePage } from "./marketing/pages/HomePage";
+import { LegalPage } from "./marketing/pages/LegalPage";
 import { NotFoundPage } from "./marketing/pages/NotFoundPage";
 import { PricingPage } from "./marketing/pages/PricingPage";
+import { ProductPage } from "./marketing/pages/ProductPage";
+import { SolutionsPage } from "./marketing/pages/SolutionsPage";
 import { AiWorkspaceHubPage } from "./pages/AiWorkspaceHubPage";
 import { Dashboard } from "./pages/Dashboard";
 import { GnssProcessor } from "./pages/GnssProcessor";
@@ -205,11 +209,45 @@ export default function App() {
     <Routes>
       <Route element={<MarketingLayout />}>
         <Route path="/" element={<HomePage />} />
+        <Route path="/product" element={<ProductPage />} />
         <Route path="/features" element={<FeaturesPage />} />
+        <Route path="/solutions" element={<SolutionsPage />} />
         <Route path="/pricing" element={<PricingPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/blog" element={<BlogPage />} />
+        <Route path="/resources" element={<BlogPage />} />
+        <Route path="/docs" element={<DocsPage />} />
+        <Route
+          path="/privacy"
+          element={
+            <LegalPage
+              kind="privacy"
+              title="Privacy Policy"
+              description="Learn how GeoSurvey AI approaches privacy, data handling, and evaluation-stage information practices."
+            />
+          }
+        />
+        <Route
+          path="/terms"
+          element={
+            <LegalPage
+              kind="terms"
+              title="Terms of Service"
+              description="Review the GeoSurvey AI terms of service for product evaluation, subscriptions, and platform usage."
+            />
+          }
+        />
+        <Route
+          path="/security"
+          element={
+            <LegalPage
+              kind="security"
+              title="Security"
+              description="Explore the GeoSurvey AI security page for access control, operational trust, and enterprise readiness."
+            />
+          }
+        />
       </Route>
       <Route path="/sign-in" element={authEnabled ? <SignInRoute /> : <DevAuthPage title="Sign in" />} />
       <Route path="/sign-up" element={authEnabled ? <SignUpRoute /> : <DevAuthPage title="Sign up" />} />

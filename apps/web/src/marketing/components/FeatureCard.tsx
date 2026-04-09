@@ -1,5 +1,7 @@
+import { motion } from "motion/react";
 import { Card } from "../../components/ui/Card";
 import type { MarketingFeature } from "../data";
+import { motionTokens } from "../../lib/motion";
 
 function FeatureIcon({ icon }: Pick<MarketingFeature, "icon">) {
   switch (icon) {
@@ -20,7 +22,8 @@ function FeatureIcon({ icon }: Pick<MarketingFeature, "icon">) {
 
 export function FeatureCard({ icon, title, description }: MarketingFeature) {
   return (
-    <Card className="marketing-feature-card">
+    <motion.div whileHover={{ y: -4, scale: motionTokens.scale.hover }} transition={{ duration: motionTokens.duration.fast }}>
+      <Card className="marketing-feature-card">
       <div className="marketing-feature-card__icon" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
           <FeatureIcon icon={icon} />
@@ -30,6 +33,7 @@ export function FeatureCard({ icon, title, description }: MarketingFeature) {
         <h3>{title}</h3>
         <p>{description}</p>
       </div>
-    </Card>
+      </Card>
+    </motion.div>
   );
 }

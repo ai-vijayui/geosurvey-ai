@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
 import { getButtonClass } from "../../components/ui/Button";
+import { Reveal } from "../../components/animation/Reveal";
 import { SectionContainer } from "./SectionContainer";
 
 export function CTASection() {
   return (
     <SectionContainer className="marketing-section marketing-section--compact">
-      <div className="marketing-cta-panel">
+      <Reveal className="marketing-cta-panel">
         <div className="marketing-cta-panel__copy">
           <span className="marketing-eyebrow">Ready to see it live</span>
           <h2>Start your first AI survey today</h2>
@@ -19,7 +20,7 @@ export function CTASection() {
             Book Demo
           </Link>
         </div>
-      </div>
+      </Reveal>
     </SectionContainer>
   );
 }

@@ -1,41 +1,61 @@
+import { motion } from "motion/react";
 import { Link } from "react-router-dom";
 import { getButtonClass } from "../../components/ui/Button";
+import { StaggerGroup } from "../../components/animation/StaggerGroup";
 import { trustMetrics } from "../data";
+import { fadeUp, motionTokens } from "../../lib/motion";
 
 export function HeroSection() {
   return (
     <section className="marketing-hero">
       <div className="marketing-shell marketing-hero__grid">
-        <div className="marketing-hero__content">
-          <span className="marketing-eyebrow">Built for modern survey operations</span>
-          <h1>AI-powered land surveying, from raw data to trusted outputs in minutes.</h1>
-          <p>
+        <StaggerGroup className="marketing-hero__content" stagger={0.09}>
+          <motion.span variants={fadeUp(12)} className="marketing-eyebrow">
+            Built for modern survey operations
+          </motion.span>
+          <motion.h1 variants={fadeUp(16)}>AI-powered land surveying, from raw data to trusted outputs in minutes.</motion.h1>
+          <motion.p variants={fadeUp(18)}>
             GeoSurvey AI helps survey teams upload field data, automate processing, detect issues earlier, and generate maps,
             reports, and boundary outputs from one premium operational platform.
-          </p>
-          <div className="marketing-hero__actions">
-            <Link className={getButtonClass("primary")} to="/sign-up">
+          </motion.p>
+          <motion.div variants={fadeUp(14)} className="marketing-hero__actions">
+            <motion.div whileHover={{ y: -2 }} whileTap={{ scale: motionTokens.scale.press }}>
+              <Link className={getButtonClass("primary")} to="/sign-up">
               Get Started
-            </Link>
-            <Link className={getButtonClass("secondary")} to="/contact">
+              </Link>
+            </motion.div>
+            <motion.div whileHover={{ y: -2 }} whileTap={{ scale: motionTokens.scale.press }}>
+              <Link className={getButtonClass("secondary")} to="/contact">
               Book Demo
-            </Link>
-          </div>
-          <div className="marketing-hero__proof">
+              </Link>
+            </motion.div>
+          </motion.div>
+          <motion.div variants={fadeUp(12)} className="marketing-hero__proof">
             <span>Trusted by survey firms, engineers, GIS leaders, and infrastructure teams.</span>
             <div className="marketing-metric-row">
               {trustMetrics.map((metric) => (
-                <div key={metric.label} className="marketing-metric-row__item">
+                <motion.div
+                  key={metric.label}
+                  className="marketing-metric-row__item"
+                  variants={fadeUp(10)}
+                  whileHover={{ y: -3 }}
+                >
                   <strong>{metric.value}</strong>
                   <span>{metric.label}</span>
-                </div>
+                </motion.div>
               ))}
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </StaggerGroup>
 
-        <div className="marketing-preview" aria-label="Product preview">
-          <div className="marketing-preview__window">
+        <motion.div
+          className="marketing-preview"
+          aria-label="Product preview"
+          initial={{ opacity: 0, y: 24, scale: 0.985 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: motionTokens.duration.slow, ease: motionTokens.easing.standard, delay: 0.12 }}
+        >
+          <motion.div className="marketing-preview__window" whileHover={{ y: -4 }}>
             <div className="marketing-preview__topbar">
               <span className="marketing-preview__badge">Live workspace</span>
               <span className="marketing-preview__status">Job 24B processing</span>
@@ -96,8 +116,8 @@ export function HeroSection() {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );
